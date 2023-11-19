@@ -1,0 +1,85 @@
+.form-control.error {
+    border-color: #FF5370;
+}
+label.error {
+    color: #FF5370;
+    margin-top: 3px;
+}
+.feather{
+    font-size: 20px;
+}
+.dataTables_length {
+    float: left;
+}
+.dataTables_length select {
+    float: left;
+    background: white;
+    position: absolute;
+    width: 100px;
+    left: 98px;
+    top: -2px
+}
+.dataTables_filter {
+    float: right;
+}
+.dataTables_filter input {
+    float: right;
+    background-color: white;
+    margin-top: -5px;
+    margin-left: 5px;
+    max-width: 150px;
+}
+.table-responsive {
+    overflow-x: hidden;
+}
+.pagination {
+    float: right;
+}
+
+.theme-tbl table tr td:last-child {
+    width: 14%;
+}
+/* .theme-tbl table tr td:last-child:has(.badge) {
+    text-align: center;
+} */
+.datatable {
+    margin: 0px !important;
+}
+
+.dataTables_wrapper {
+    margin-top: 10px;
+}
+
+.select2-container--default .select2-selection--single{
+    height: 35px;
+    color: #495057;
+}
+.select2-container--default .select2-selection--single .select2-selection__rendered{
+    line-height: 35px;
+}
+.select2-container--default .select2-selection--single .select2-selection__arrow{
+    height: 35px;
+}
+
+
+@media (max-width: 767px) {
+    .table-responsive {
+        overflow-x: auto;
+    }
+    .dataTables_length select {
+        position: relative;
+        float: none;
+    }
+    .dataTables_length, .dataTables_length {
+        float: none;
+    }
+
+    
+    .dataTables_filter input {
+        float: none;
+        background-color: white;
+    }
+
+    
+
+}
