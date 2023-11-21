@@ -45,6 +45,7 @@ class ServiceController extends Controller
 
                     if ($user->can('Services Update')) {
                         $action .= '<a href="'.route('services.edit', $service->uuid).'" class="btn btn-icon btn-secondary"><i class="feather icon-edit-2"></i></a>';
+                        $action .= '<a href="'.route('service.payments', $service->uuid).'" class="btn btn-icon btn-secondary"><i class="feather icon-user-check"></i></a>';
                     }
 
                     if ($user->can('Services Delete')) {

@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Service;
+use App\Models\ServicePayment;
 use Illuminate\Http\Request;
+use DataTables;
 
 class PaymentsController extends Controller
 {
@@ -11,9 +14,35 @@ class PaymentsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request, $serviceId)
     {
-         return view('reports.payments');
+        $tab = 'active';
+        if ($request->filled('tab') && in_array($request->tab, ['completed', 'canceled'])) {
+            $tab = $request->tab;
+        }
+
+        if ($request->ajax()) {
+            $services = ServicePayment::with('service', 'customer', 'user')->where('service_id', $serviceId);
+            /*switch ($tab) {
+                case 'full':
+                    $services->where('payment_mode', 'full');
+                    break;
+                case 'canceled':
+                    $jobs->where('status', 'canceled');
+                    break;
+                default:
+                    $services->where('payment_mode', 'partial');
+                    break;
+            }*/
+
+            return Datatables::of($services)
+                ->editColumn('id', 'ID: {{$id}}')
+                ->rawColumns(['is_active', 'action'])
+                ->make(true);
+        }
+
+        $service = Service::uuid($serviceId)->first();
+        return view('services.payments', get_defined_vars());
     }
 
     /**
