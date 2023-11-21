@@ -169,11 +169,12 @@ Route::middleware(['auth'])->group(function () {
     Route::POST('job-assign',[JobController::class, 'assignJob'])->name('job.assign');
     Route::POST('customers-job-details',[JobController::class, 'customerJobDetails'])->name('customers.job.details');
     Route::POST('update-customer-job',[JobController::class, 'updateCustomerJobStatus'])->name('update.customer.job');
-    Route::resource('payments', PaymentsController::class);
+//    Route::resource('payments', PaymentsController::class);
 
     /*list payments against service*/
     Route::get('service-payment/{service_id}', [PaymentsController::class, 'index'])->name('service.payments');
     Route::post('service-payment/{service_id}', [PaymentsController::class, 'index'])->name('service.payments.ajax');
+    Route::post('add-service-payment',[PaymentsController::class, 'addServicePayment'])->name('add.service.payment');
 });
 Route::get('/export-csv', [ReportController::class,'getCustomerReportExport']);
 Route::get('/export-invoice', [ReportController::class,'exportInvoiceDetails']);

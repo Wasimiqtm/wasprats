@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Customer;
 use App\Models\Service;
 use App\Models\ServicePayment;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Session;
 use DataTables;
 
 class PaymentsController extends Controller
@@ -37,12 +40,43 @@ class PaymentsController extends Controller
 
             return Datatables::of($services)
                 ->editColumn('id', 'ID: {{$id}}')
+                ->editColumn('created_at', function (ServicePayment $servicePayment) {
+                    return \Carbon\Carbon::parse($servicePayment->created_at )->isoFormat('DD-MM-YYYY');
+                })
                 ->rawColumns(['is_active', 'action'])
                 ->make(true);
         }
-
         $service = Service::uuid($serviceId)->first();
-        return view('services.payments', get_defined_vars());
+        $customers = Customer::get();
+        $allUsers = User::get();
+        $users = [];
+        foreach($allUsers as $user){
+            if( $user->getRoleNames()->first() ==='Technician') {
+                $users[] = $user;
+            }
+        }
+
+        return view('services.payments', compact('service', 'customers', 'users'), get_defined_vars());
+    }
+
+    /**
+     * Add payment against a service
+     *
+     */
+    public function addServicePayment(Request $request)
+    {
+        $service =  Service::where('uuid', $request->service_id)->first();
+        $data = [
+            'service_id' => $service->id,
+            'customer_id' => $request->customer_id,
+            'user_id' => $request->user_id,
+            'payment_mode' => $request->payment_mode,
+            'amount' => $request->amount,
+            'description' => $request->description
+        ];
+        ServicePayment::create($data);
+        Session::flash('success', __('Payment successfully added!'));
+        return ['status' => true];
     }
 
     /**

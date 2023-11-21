@@ -186,12 +186,12 @@
                             <span class="pcoded-mtext">All Credits</span>
                         </a>
                     </li>
-                    <li class="nav-item">
+                    {{--<li class="nav-item">
                         <a href="{{ route('payments.index') }}" class="nav-link ">
                             <span class="pcoded-micon"><i class="feather icon-home"></i></span>
                             <span class="pcoded-mtext">All Payments</span>
                         </a>
-                    </li>
+                    </li>--}}
                   {{--  <li class="nav-item">
                         <a href="{{ route('customer.active.jobs') }}" class="nav-link ">
                             <span class="pcoded-micon"><i class="feather icon-home"></i></span>
