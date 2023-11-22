@@ -1,17 +1,29 @@
 <x-app-layout>
 
     <?php
-        if (in_array($tab, ['completed', 'canceled'])) {
+        if (in_array($tab, ['full', 'partial'])) {
             $tab = $request->tab;
         } else {
-            $tab = 'active';
+            $tab = 'all';
         }
     ?>
 
     <div class="pcoded-main-container">
         <div class="pcoded-content">
             <a class="btn btn-primary" id="addPayment">Add Payment</a>
-            <x-breadcrumb title="{{ $service->name }} Payments" />
+            <x-breadcrumb title="{{ $job->services->name }} Payments" />
+            <ul class="nav nav-pills mb-4 bg-white" id="myTab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link text-uppercase {{$tab ==='all'?'active':''}}" href="{{ route('service.payments.ajax', [$job->id]) . '?tab=all' }}">All Payments</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-uppercase {{$tab ==='full'?'active':''}}" href="{{route('service.payments.ajax', [ $job->id ]) . '?tab=full' }}">Full Payments</a>
+                </li>
+                <li class="nav-item">
+                    <a class=" nav-link text-uppercase {{$tab ==='partial'?'active':''}}" href="{{route('service.payments.ajax', [ $job->id ]) . '?tab=partial' }}">Partial Payments</a>
+                </li>
+
+            </ul>
 
             {{--@include('sections.customer-tabs')--}}
 
@@ -40,32 +52,25 @@
                     </div>
                     <div class="modal-body">
                         <form id="credit">
-                            <input type="hidden" id="service_id" name="customer_id" value="{{request()->service_id}}">
 
+                            <input type="hidden" id="schedule_job_id" name="customer_id" value="{{$job->id}}">
                             <div class="form-group">
                                 <label class="form-label">Service Name</label>
-                                <input type="text" class="form-control" readonly value="{{$service->name}}" id="serviceName">
+                                <input type="hidden" id="service_id" name="customer_id" value="{{$job->services->id}}">
+                                <input type="text" class="form-control" readonly value="{{$job->services->name}}">
                             </div>
 
-                            <div class="form-group row">
+                            <div class="form-group">
                                 <label class="form-label">Select Customer</label>
-                                <div class="col-lg-12 col-sm-12">
-                                    <select id="customerId" class="form-select">
-                                        @foreach($customers as $value)
-                                            <option value="{{$value->id}}">{{$value->first_name.' '.$value->last_name}}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
+                                <input type="hidden" id="customerId" name="customer_id" value="{{$job->customer->id}}">
+                                <input type="text" class="form-control" readonly value="{{$job->customer->name}}">
                             </div>
 
-                            <div class="form-group row">
+                            <div class="form-group">
                                 <label class="form-label">Select User</label>
                                 <div class="col-lg-12 col-sm-12">
-                                    <select id="userId" class="form-select">
-                                        @foreach($users as $value)
-                                            <option value="{{$value->id}}">{{$value->name}}</option>
-                                        @endforeach
-                                    </select>
+                                    <input type="hidden" id="userId" name="customer_id" value="{{$job->schedule->user->id}}">
+                                    <input type="text" class="form-control" readonly value="{{$job->schedule->user->name}}">
                                 </div>
                             </div>
 
@@ -79,8 +84,13 @@
                             </div>
 
                             <div class="form-group">
-                                <label class="form-label">Amount</label>
-                                <input type="number" class="form-control" placeholder="Amount" id="amount">
+                                <label class="form-label">Amount Payable</label>
+                                <input type="text" class="form-control" readonly value="{{$job->services->service_amount}}">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Pay Amount</label>
+                                <input type="number" max="{{$job->services->service_amount}}" class="form-control" placeholder="Amount" id="amount">
                             </div>
 
                             <div class="form-group">
@@ -97,11 +107,10 @@
                 </div>
             </div>
         </div>
-
     @push('scripts')
         <script type="text/javascript">
             $("document").ready(function() {
-                var datatable_url = route('service.payments.ajax', [{{ $service->id }}]) + '?tab={{ $tab }}';
+                var datatable_url = route('service.payments.ajax', [{{ $job->services->id }}]) + '?tab={{ $tab }}';
                 var datatable_columns = [{
                         data: 'service.name'
                     },
@@ -131,19 +140,19 @@
             });
 
             $("body").on('click','#savePayment',function(){
-                /*var value1 = $("#exampleFormControlSelect1").val();*/
+                var schedule_job_id = $("#schedule_job_id").val();
                 var service_id = $("#service_id").val();
                 var customerId = $("#customerId").val();
                 var userId = $("#userId").val();
                 var paymentMode = $("#paymentMode").val();
                 var amount = $("#amount").val();
-                var dated = $("#dated").val();
                 var description = $("#description").val();
                 $.ajax({
                     url: '{{route('add.service.payment')}}',
                     type: 'POST',
                     "headers": {'X-CSRF-TOKEN': "{{csrf_token()}}"},
                     data:{
+                        schedule_job_id:schedule_job_id,
                         service_id:service_id,
                         customer_id: customerId,
                         user_id: userId,

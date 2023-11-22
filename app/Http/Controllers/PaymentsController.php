@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
+use App\Models\ScheduleJob;
 use App\Models\Service;
 use App\Models\ServicePayment;
 use App\Models\User;
@@ -19,24 +20,26 @@ class PaymentsController extends Controller
      */
     public function index(Request $request, $serviceId)
     {
-        $tab = 'active';
-        if ($request->filled('tab') && in_array($request->tab, ['completed', 'canceled'])) {
+        $job = ScheduleJob::with(['services','customer', 'schedule.user'])->whereId($serviceId)->first();
+
+        $tab = 'all';
+        if ($request->filled('tab') && in_array($request->tab, ['full', 'partial'])) {
             $tab = $request->tab;
         }
-
+        $services = ServicePayment::with('service', 'customer', 'user')->where('schedule_job_id', $serviceId)->get();
         if ($request->ajax()) {
             $services = ServicePayment::with('service', 'customer', 'user')->where('service_id', $serviceId);
-            /*switch ($tab) {
+            switch ($tab) {
                 case 'full':
                     $services->where('payment_mode', 'full');
                     break;
-                case 'canceled':
-                    $jobs->where('status', 'canceled');
-                    break;
-                default:
+                case 'partial':
                     $services->where('payment_mode', 'partial');
                     break;
-            }*/
+                default:
+                    $services;
+                    break;
+            }
 
             return Datatables::of($services)
                 ->editColumn('id', 'ID: {{$id}}')
@@ -56,7 +59,7 @@ class PaymentsController extends Controller
             }
         }
 
-        return view('services.payments', compact('service', 'customers', 'users'), get_defined_vars());
+        return view('services.payments', compact('service', 'customers', 'users', 'job'), get_defined_vars());
     }
 
     /**
@@ -65,7 +68,7 @@ class PaymentsController extends Controller
      */
     public function addServicePayment(Request $request)
     {
-        $service =  Service::where('uuid', $request->service_id)->first();
+        $service =  Service::where('id', $request->service_id)->first();
         $data = [
             'service_id' => $service->id,
             'customer_id' => $request->customer_id,

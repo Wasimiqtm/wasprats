@@ -10,7 +10,7 @@
                                 'Service Name',
                                 'Customer Name',
                                 'Status',
-
+                                ''
                             ]"/>
                     </div>
                 </div>
@@ -35,6 +35,11 @@
                 },
                 {
                     data: 'status'
+                },
+                {
+                    data: 'action',
+                    orderable: false,
+                    searchable: false
                 }
             ];
 

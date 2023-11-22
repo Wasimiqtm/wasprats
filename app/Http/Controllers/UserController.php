@@ -228,6 +228,12 @@ class UserController extends Controller
                 ->addColumn('service_name',function ($item){
                     return $item->services->name;
                 })
+               ->addColumn('action', function ($item) {
+                   $action = '<td><div class="overlay-edit">';
+                   $action .= '<a href="'.route('service.payments', $item->id)."?tab=all".'" class="btn btn-icon btn-secondary"><i class="feather icon-user-check"></i></a>';
+                   $action .= '</div></td>';
+                   return $action;
+               })
                 ->make(true);
         }
         return view('users.user_detail');
