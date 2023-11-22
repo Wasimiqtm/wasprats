@@ -42,6 +42,9 @@ class PaymentsController extends Controller
             }
 
             return Datatables::of($services)
+                /*->addColumn('payable', function ($payment) {
+                    return $payment->service->service_amount - $payment->amount;
+                })*/
                 ->editColumn('id', 'ID: {{$id}}')
                 ->editColumn('created_at', function (ServicePayment $servicePayment) {
                     return \Carbon\Carbon::parse($servicePayment->created_at )->isoFormat('DD-MM-YYYY');
@@ -70,6 +73,7 @@ class PaymentsController extends Controller
     {
         $service =  Service::where('id', $request->service_id)->first();
         $data = [
+            'schedule_job_id' => $request->schedule_job_id,
             'service_id' => $service->id,
             'customer_id' => $request->customer_id,
             'user_id' => $request->user_id,

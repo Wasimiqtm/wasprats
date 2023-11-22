@@ -12,6 +12,7 @@
         <div class="pcoded-content">
             <a class="btn btn-primary" id="addPayment">Add Payment</a>
             <x-breadcrumb title="{{ $job->services->name }} Payments" />
+            
             <ul class="nav nav-pills mb-4 bg-white" id="myTab" role="tablist">
                 <li class="nav-item">
                     <a class="nav-link text-uppercase {{$tab ==='all'?'active':''}}" href="{{ route('service.payments.ajax', [$job->id]) . '?tab=all' }}">All Payments</a>
@@ -31,7 +32,7 @@
                 <div class="col-xl-12 col-md-12">
                     <div class="card user-profile-list">
                         <div class="card-body-dd theme-tbl">
-                            <x-table action="false" checkbox="false" :keys="['Service Name', 'Customer', 'Technician', 'Payment Mode', 'Amount Paid', 'Data']" />
+                            <x-table action="false" checkbox="false" :keys="['Service Name', 'Customer', 'Technician', 'Payment Mode', 'Total', 'Amount Paid', 'Date']" />
                         </div>
                     </div>
                 </div>
@@ -124,8 +125,14 @@
                         data: 'payment_mode'
                     },
                     {
+                        data: 'service.service_amount'
+                    },
+                    {
                         data: 'amount'
                     },
+                    /*{
+                        data: 'payable'
+                    },*/
                     {
                         data: 'created_at'
                     }
