@@ -280,10 +280,6 @@ class UserController extends Controller
                     break;
             }
             return Datatables::of($services)
-
-                // ->addColumn('payable', function () {
-                //     return 345;
-                // })
                 ->editColumn('id', 'ID: {{$id}}')
                 ->editColumn('created_at', function (ServicePayment $servicePayment) {
                     return \Carbon\Carbon::parse($servicePayment->created_at )->isoFormat('DD-MM-YYYY');

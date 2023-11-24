@@ -64,14 +64,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('get-technician-amount/{user_id}', [UserController::class, 'getTechnicianAmount'])->name('technician.amount');
     Route::post('get-technician-amount/{user_id}', [UserController::class, 'getTechnicianAmount'])->name('technician.amount.ajax');
 
-
-
-    /*list payments against service*/
-    // Route::get('service-payment/{service_id}', [PaymentsController::class, 'index'])->name('service.payments');
-    // Route::post('service-payment/{service_id}', [PaymentsController::class, 'index'])->name('service.payments.ajax');
-
-
-
     Route::resource('customers', CustomerController::class);
     Route::post('customers/ajax', [CustomerController::class, 'index'])->name('customers.ajax');
 
