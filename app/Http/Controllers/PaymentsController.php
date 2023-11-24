@@ -8,7 +8,9 @@ use App\Models\Service;
 use App\Models\ServicePayment;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 use Session;
+use PDF;
 use DataTables;
 
 class PaymentsController extends Controller
@@ -40,11 +42,16 @@ class PaymentsController extends Controller
                     $services;
                     break;
             }
-
             return Datatables::of($services)
                 /*->addColumn('payable', function ($payment) {
                     return $payment->service->service_amount - $payment->amount;
                 })*/
+                ->addColumn('action', function ($servicePaymentId) {
+                   $action = '<td><div class="overlay-edit">';
+                   $action .= '<a href="'.route('single.payment.invoice', $servicePaymentId).'" class="btn btn-icon btn-secondary"><i class="feather icon-user-check"></i></a>';
+                   $action .= '</div></td>';
+                   return $action;
+               })
                 ->editColumn('id', 'ID: {{$id}}')
                 ->editColumn('created_at', function (ServicePayment $servicePayment) {
                     return \Carbon\Carbon::parse($servicePayment->created_at )->isoFormat('DD-MM-YYYY');
@@ -150,5 +157,28 @@ class PaymentsController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+     public function amountInvoice($serviceId)
+    {
+        $currentTime = Carbon::now();
+        $fileName =  $currentTime->toDateTimeString();
+        $items = ServicePayment::with('service', 'customer', 'user')->where('service_id', $serviceId)->get();
+        view()->share('items',$items);
+        $pdf = PDF::loadView('services.amount_invoice');
+        return $pdf->download($fileName.'invoice.pdf');
+        
+    }
+
+    public function singlePaymentInvoice($servicePaymentId)
+    {
+        
+        $currentTime = Carbon::now();
+        $fileName =  $currentTime->toDateTimeString();
+        $servicePayment = ServicePayment::where('id', $servicePaymentId)->with('service', 'customer', 'user')->first();
+        view()->share('servicePayment',$servicePayment);
+        $pdf = PDF::loadView('services.single_payment_invoice');
+        return $pdf->download($fileName.' payment invoice.pdf');
+        
     }
 }

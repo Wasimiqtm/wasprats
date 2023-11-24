@@ -58,6 +58,11 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('users', UserController::class);
     Route::post('users/ajax', [UserController::class, 'index'])->name('users.ajax');
     Route::any('users-get-active-jobs', [UserController::class, 'getJobsDetails'])->name('users.get.active.jobs');
+    Route::get('job-invoice/{user_id}', [UserController::class, 'jobInvoice'])->name('job.invoice');
+
+    /*list payments technician*/
+    Route::get('get-technician-amount/{user_id}', [UserController::class, 'getTechnicianAmount'])->name('technician.amount');
+    Route::post('get-technician-amount/{user_id}', [UserController::class, 'getTechnicianAmount'])->name('technician.amount.ajax');
 
     Route::resource('customers', CustomerController::class);
     Route::post('customers/ajax', [CustomerController::class, 'index'])->name('customers.ajax');
@@ -175,6 +180,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('service-payment/{service_id}', [PaymentsController::class, 'index'])->name('service.payments');
     Route::post('service-payment/{service_id}', [PaymentsController::class, 'index'])->name('service.payments.ajax');
     Route::post('add-service-payment',[PaymentsController::class, 'addServicePayment'])->name('add.service.payment');
+    Route::get('amount-invoice/{service_id}', [PaymentsController::class, 'amountInvoice'])->name('amount.invoice');
+    Route::get('payment-invoice/{service_payment_id}', [PaymentsController::class, 'singlePaymentInvoice'])->name('single.payment.invoice');
 });
 Route::get('/export-csv', [ReportController::class,'getCustomerReportExport']);
 Route::get('/export-invoice', [ReportController::class,'exportInvoiceDetails']);
