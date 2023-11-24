@@ -35,7 +35,7 @@
                 <div class="col-xl-12 col-md-12">
                     <div class="card user-profile-list">
                         <div class="card-body-dd theme-tbl">
-                            <x-table action="false" checkbox="false" :keys="['Service Name', 'Customer', 'Technician', 'Payment Mode', 'Total', 'Amount Paid', 'Date']" />
+                            <x-table action="false" checkbox="false" :keys="['Service Name', 'Customer', 'Technician', 'Payment Mode', 'Total', 'Amount Paid', 'Date','']" />
                         </div>
                     </div>
                 </div>
@@ -138,6 +138,11 @@
                     },*/
                     {
                         data: 'created_at'
+                    },
+                    {
+                        data: 'action',
+                        orderable: false,
+                        searchable: false
                     }
                 ];
 

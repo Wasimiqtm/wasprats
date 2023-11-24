@@ -189,6 +189,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('service-payment/{service_id}', [PaymentsController::class, 'index'])->name('service.payments.ajax');
     Route::post('add-service-payment',[PaymentsController::class, 'addServicePayment'])->name('add.service.payment');
     Route::get('amount-invoice/{service_id}', [PaymentsController::class, 'amountInvoice'])->name('amount.invoice');
+    Route::get('payment-invoice/{service_payment_id}', [PaymentsController::class, 'singlePaymentInvoice'])->name('single.payment.invoice');
 });
 Route::get('/export-csv', [ReportController::class,'getCustomerReportExport']);
 Route::get('/export-invoice', [ReportController::class,'exportInvoiceDetails']);

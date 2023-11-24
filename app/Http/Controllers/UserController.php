@@ -260,17 +260,14 @@ class UserController extends Controller
     {
         $user = User::where('id',$userId)->first();
         $tab = 'all';
+
         if ($request->filled('tab') && in_array($request->tab, ['full', 'partial'])) {
             $tab = $request->tab;
         }
+        $dateFilter = json_decode(request()->extra_search);
         $services = ServicePayment::with('service', 'customer', 'user')->where('user_id', $userId)->get();
-         // $services->transform(function ($service) {
-         //                $service->remainingAmount = (int) $service->service->service_amount - (int)$service->amount;
-         //                return $service;
-         //            });
-         // dd($services);
         if ($request->ajax()) {
-            $services = ServicePayment::with('service', 'customer', 'user')->where('user_id', $userId);
+            $services = ServicePayment::with('service', 'customer', 'user')->where('user_id', $userId)->whereDate('created_at', '>=', Carbon::parse($dateFilter->start_date)->format('Y-m-d'))->whereDate('created_at', '<=', Carbon::parse($dateFilter->end_date)->format('Y-m-d'));
             switch ($tab) {
                 case 'full':
                     $services->where('payment_mode', 'full');
@@ -283,9 +280,10 @@ class UserController extends Controller
                     break;
             }
             return Datatables::of($services)
-                /*->addColumn('payable', function ($payment) {
-                    return $payment->service->service_amount - $payment->amount;
-                })*/
+
+                // ->addColumn('payable', function () {
+                //     return 345;
+                // })
                 ->editColumn('id', 'ID: {{$id}}')
                 ->editColumn('created_at', function (ServicePayment $servicePayment) {
                     return \Carbon\Carbon::parse($servicePayment->created_at )->isoFormat('DD-MM-YYYY');
@@ -293,15 +291,6 @@ class UserController extends Controller
                 ->rawColumns(['is_active', 'action'])
                 ->make(true);
         }
-        // $service = Service::uuid($serviceId)->first();
-        // $customers = Customer::get();
-        // $allUsers = User::get();
-        // $users = [];
-        // foreach($allUsers as $user){
-        //     if( $user->getRoleNames()->first() ==='Technician') {
-        //         $users[] = $user;
-        //     }
-        // }
 
         return view('users.payments', compact('user'), get_defined_vars());
         

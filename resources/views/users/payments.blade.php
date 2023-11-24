@@ -7,6 +7,7 @@
             $tab = 'all';
         }
     ?>
+
     <div class="pcoded-main-container">
         <div class="pcoded-content">
             <a class="btn btn-primary" id="addPayment">Add Payment</a>
@@ -28,12 +29,15 @@
             </ul>
 
             {{--@include('sections.customer-tabs')--}}
-
             <div class="row">
+                <div style="margin: 20px 0px;">
+
+                    <input type="text" name="daterange" value="" />
+                </div>
                 <div class="col-xl-12 col-md-12">
                     <div class="card user-profile-list">
                         <div class="card-body-dd theme-tbl">
-                            <x-table action="false" checkbox="false" :keys="['Mode','Total Amount', 'Paid Amount','Payable Amount', 'Date']" />
+                            <x-table action="false" checkbox="false" :keys="['Service Name','Customer','Payment Mode','Total Amount', 'Paid Amount','Payable Amount', 'Date']" />
                         </div>
                     </div>
                 </div>
@@ -46,10 +50,19 @@
     {{--Modal window--}}
    
     @push('scripts')
+        <script src="{{asset('js/plugins/highchart.min.js')}}"></script>
+        <script src="{{asset('js/plugins/daterange-picker.js')}}"></script>
+        <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.j"></script>
         <script type="text/javascript">
             $("document").ready(function() {
                 var datatable_url = route('technician.amount.ajax', [{{ $user->id }}]) + '?tab={{ $tab }}';
                 var datatable_columns = [
+                    {
+                        data: 'service.name'
+                    },
+                    {
+                        data: 'customer.name'
+                    },
                     {
                         data: 'payment_mode'
                     },
@@ -66,9 +79,45 @@
                         data: 'created_at'
                     }
                 ];
+                var start = moment().subtract(29, 'days');
+                var endDate = moment();
+                $('input[name="daterange"]').daterangepicker({
+                    startDate: start,
+                    endDate: endDate,
 
-                create_datatables(datatable_url, datatable_columns);
+                });
 
+                 create_datatables(datatable_url, datatable_columns,'','',10,'','',[],{start_date:start,end_date:endDate});
+                $('input[name="daterange"]').on('apply.daterangepicker', function(ev, picker) {
+                    var dataPOST = {start_date:picker.startDate,end_date:picker.endDate}
+                    var   pageLength=10;
+                    $('#datatable').DataTable().destroy();
+                    var mytable = $('#datatable').DataTable({
+                        oLanguage: { sProcessing: '<img src="'+ Ziggy.url +'/images/bx_loader.gif">' },
+                        processing: true,
+                        serverSide: true,
+                        ordering: false,
+                        responsive: true,
+                        pageLength: pageLength,
+                        bLengthChange: (pageLength>0)?(pageLength==30?false:true):false,
+                        paging: (pageLength>0)?true:false,
+                        info: (pageLength>0)?(pageLength==30?false:true):false,
+                        "ajax": {
+                            "url": datatable_url,
+                            type:'POST',
+                            "data": function ( d ) {
+                                return $.extend( {}, d, {
+                                    "extra_search": JSON.stringify(dataPOST)
+                                } );
+                            }
+                        }, columns: datatable_columns,
+                        order: false,
+                        drawCallback: function ( settings ) {
+
+                        }
+                    });
+
+                });
                 /*open modal for adding payment*/
                 $("body").on('click', "#addPayment", function () {
                     $("#paymentModal").modal('show')

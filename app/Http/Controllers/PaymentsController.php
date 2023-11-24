@@ -46,6 +46,12 @@ class PaymentsController extends Controller
                 /*->addColumn('payable', function ($payment) {
                     return $payment->service->service_amount - $payment->amount;
                 })*/
+                ->addColumn('action', function ($servicePaymentId) {
+                   $action = '<td><div class="overlay-edit">';
+                   $action .= '<a href="'.route('single.payment.invoice', $servicePaymentId).'" class="btn btn-icon btn-secondary"><i class="feather icon-user-check"></i></a>';
+                   $action .= '</div></td>';
+                   return $action;
+               })
                 ->editColumn('id', 'ID: {{$id}}')
                 ->editColumn('created_at', function (ServicePayment $servicePayment) {
                     return \Carbon\Carbon::parse($servicePayment->created_at )->isoFormat('DD-MM-YYYY');
@@ -161,6 +167,18 @@ class PaymentsController extends Controller
         view()->share('items',$items);
         $pdf = PDF::loadView('services.amount_invoice');
         return $pdf->download($fileName.'invoice.pdf');
+        
+    }
+
+    public function singlePaymentInvoice($servicePaymentId)
+    {
+        
+        $currentTime = Carbon::now();
+        $fileName =  $currentTime->toDateTimeString();
+        $servicePayment = ServicePayment::where('id', $servicePaymentId)->with('service', 'customer', 'user')->first();
+        view()->share('servicePayment',$servicePayment);
+        $pdf = PDF::loadView('services.single_payment_invoice');
+        return $pdf->download($fileName.' payment invoice.pdf');
         
     }
 }
