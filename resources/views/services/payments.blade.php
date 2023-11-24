@@ -7,13 +7,15 @@
             $tab = 'all';
         }
     ?>
-
     <div class="pcoded-main-container">
         <div class="pcoded-content">
             <a class="btn btn-primary" id="addPayment">Add Payment</a>
             <x-breadcrumb title="{{ $job->services->name }} Payments" />
             
             <ul class="nav nav-pills mb-4 bg-white" id="myTab" role="tablist">
+                <li class="nav-item ">
+                    <a class=" nav-link text-uppercase" href="{{ route('amount.invoice', $job->services->id)}}">Print Invoice</a>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link text-uppercase {{$tab ==='all'?'active':''}}" href="{{ route('service.payments.ajax', [$job->id]) . '?tab=all' }}">All Payments</a>
                 </li>
@@ -23,6 +25,7 @@
                 <li class="nav-item">
                     <a class=" nav-link text-uppercase {{$tab ==='partial'?'active':''}}" href="{{route('service.payments.ajax', [ $job->id ]) . '?tab=partial' }}">Partial Payments</a>
                 </li>
+                
 
             </ul>
 

@@ -8,7 +8,9 @@ use App\Models\Service;
 use App\Models\ServicePayment;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 use Session;
+use PDF;
 use DataTables;
 
 class PaymentsController extends Controller
@@ -40,7 +42,6 @@ class PaymentsController extends Controller
                     $services;
                     break;
             }
-
             return Datatables::of($services)
                 /*->addColumn('payable', function ($payment) {
                     return $payment->service->service_amount - $payment->amount;
@@ -150,5 +151,16 @@ class PaymentsController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+     public function amountInvoice($serviceId)
+    {
+        $currentTime = Carbon::now();
+        $fileName =  $currentTime->toDateTimeString();
+        $items = ServicePayment::with('service', 'customer', 'user')->where('service_id', $serviceId)->get();
+        view()->share('items',$items);
+        $pdf = PDF::loadView('services.amount_invoice');
+        return $pdf->download($fileName.'invoice.pdf');
+        
     }
 }

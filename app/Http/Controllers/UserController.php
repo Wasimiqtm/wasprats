@@ -8,10 +8,13 @@ use App\Models\ScheduleJob;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
-
+use PDF;
 use App\Http\Requests\UserRequest;
 use App\Models\Role;
 use App\Models\User;
+use App\Models\ServicePayment;
+use App\Models\Customer;
+use Carbon\Carbon;
 use Session;
 use DataTables;
 use Auth;
@@ -48,6 +51,7 @@ class UserController extends Controller
                     }
                     if( $user->getRoleNames()->first() ==='Technician') {
                         $action .= '<a href="' . route('users.get.active.jobs', ['id' =>$user->uuid,'type' =>'active']) . '" class="btn btn-icon btn btn-primary"><i class="feather icon-user-check"></i></a>';
+                         $action .= '<a href="'.route('technician.amount', $user->id)."?tab=all".'" class="btn btn-icon btn btn-info"><i class="fas fa-history"></i></a>';
                     }
                     $action .= '</div></td>';
 
@@ -238,4 +242,69 @@ class UserController extends Controller
         }
         return view('users.user_detail');
     }
+
+     public function jobInvoice($userId)
+    {
+        $currentTime = Carbon::now();
+        $fileName =  $currentTime->toDateTimeString();
+        $user = User::where('uuid',$userId)->first();
+        $jobs = ScheduleJob::with(['services','customer'])->whereIn('schedule_id',$user->schedules->pluck('id'))->get();
+        view()->share('jobs',$jobs);
+        $pdf = PDF::loadView('users.invoice_jobs');
+        return $pdf->download($fileName.'invoice.pdf');
+        
+    }
+
+
+    public function getTechnicianAmount(Request $request, $userId)
+    {
+        $user = User::where('id',$userId)->first();
+        $tab = 'all';
+        if ($request->filled('tab') && in_array($request->tab, ['full', 'partial'])) {
+            $tab = $request->tab;
+        }
+        $services = ServicePayment::with('service', 'customer', 'user')->where('user_id', $userId)->get();
+         // $services->transform(function ($service) {
+         //                $service->remainingAmount = (int) $service->service->service_amount - (int)$service->amount;
+         //                return $service;
+         //            });
+         // dd($services);
+        if ($request->ajax()) {
+            $services = ServicePayment::with('service', 'customer', 'user')->where('user_id', $userId);
+            switch ($tab) {
+                case 'full':
+                    $services->where('payment_mode', 'full');
+                    break;
+                case 'partial':
+                    $services->where('payment_mode', 'partial');
+                    break;
+                default:
+                    $services;
+                    break;
+            }
+            return Datatables::of($services)
+                /*->addColumn('payable', function ($payment) {
+                    return $payment->service->service_amount - $payment->amount;
+                })*/
+                ->editColumn('id', 'ID: {{$id}}')
+                ->editColumn('created_at', function (ServicePayment $servicePayment) {
+                    return \Carbon\Carbon::parse($servicePayment->created_at )->isoFormat('DD-MM-YYYY');
+                })
+                ->rawColumns(['is_active', 'action'])
+                ->make(true);
+        }
+        // $service = Service::uuid($serviceId)->first();
+        // $customers = Customer::get();
+        // $allUsers = User::get();
+        // $users = [];
+        // foreach($allUsers as $user){
+        //     if( $user->getRoleNames()->first() ==='Technician') {
+        //         $users[] = $user;
+        //     }
+        // }
+
+        return view('users.payments', compact('user'), get_defined_vars());
+        
+    }
+
 }
