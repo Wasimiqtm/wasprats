@@ -10,7 +10,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Session;
-use PDF;
+use Barryvdh\DomPDF\Facade\Pdf;
 use DataTables;
 
 class PaymentsController extends Controller
@@ -167,18 +167,18 @@ class PaymentsController extends Controller
         view()->share('items',$items);
         $pdf = PDF::loadView('services.amount_invoice');
         return $pdf->download($fileName.'invoice.pdf');
-        
+
     }
 
     public function singlePaymentInvoice($servicePaymentId)
     {
-        
+
         $currentTime = Carbon::now();
         $fileName =  $currentTime->toDateTimeString();
         $servicePayment = ServicePayment::where('id', $servicePaymentId)->with('service', 'customer', 'user')->first();
         view()->share('servicePayment',$servicePayment);
         $pdf = PDF::loadView('services.single_payment_invoice');
         return $pdf->download($fileName.' payment invoice.pdf');
-        
+
     }
 }

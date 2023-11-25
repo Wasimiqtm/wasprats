@@ -8,7 +8,7 @@ use App\Models\ScheduleJob;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
-use PDF;
+use Barryvdh\DomPDF\Facade\Pdf;
 use App\Http\Requests\UserRequest;
 use App\Models\Role;
 use App\Models\User;
@@ -252,7 +252,7 @@ class UserController extends Controller
         view()->share('jobs',$jobs);
         $pdf = PDF::loadView('users.invoice_jobs');
         return $pdf->download($fileName.'invoice.pdf');
-        
+
     }
 
 
@@ -289,7 +289,7 @@ class UserController extends Controller
         }
 
         return view('users.payments', compact('user'), get_defined_vars());
-        
+
     }
 
 }
