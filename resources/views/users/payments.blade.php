@@ -10,11 +10,11 @@
 
     <div class="pcoded-main-container">
         <div class="pcoded-content">
-            <a class="btn btn-primary" id="addPayment">Add Payment</a>
+            {{--<a class="btn btn-primary" id="addPayment">Add Payment</a>--}}
             <x-breadcrumb title="{{ $user->name }} Payments" />
-            
+
             <ul class="nav nav-pills mb-4 bg-white" id="myTab" role="tablist">
-                
+
                 <li class="nav-item">
                     <a class="nav-link text-uppercase {{$tab ==='all'?'active':''}}" href="{{ route('technician.amount.ajax', [$user->id]) . '?tab=all' }}">All Payments</a>
                 </li>
@@ -24,7 +24,7 @@
                 <li class="nav-item">
                     <a class=" nav-link text-uppercase {{$tab ==='partial'?'active':''}}" href="{{route('technician.amount.ajax', [ $user->id ]) . '?tab=partial' }}">Partial Payments</a>
                 </li>
-                
+
 
             </ul>
 
@@ -37,7 +37,7 @@
                 <div class="col-xl-12 col-md-12">
                     <div class="card user-profile-list">
                         <div class="card-body-dd theme-tbl">
-                            <x-table action="false" checkbox="false" :keys="['Service Name','Customer','Payment Mode','Total Amount', 'Paid Amount','Payable Amount', 'Date']" />
+                            <x-table action="false" checkbox="false" :keys="['Service Name','Customer','Payment Mode','Total Amount', 'Paid Amount', 'Date']" />
                         </div>
                     </div>
                 </div>
@@ -48,7 +48,7 @@
     @include('layouts.dataTablesFiles')
 
     {{--Modal window--}}
-   
+
     @push('scripts')
         <script src="{{asset('js/plugins/highchart.min.js')}}"></script>
         <script src="{{asset('js/plugins/daterange-picker.js')}}"></script>
@@ -71,10 +71,10 @@
                     },
                     {
                         data: 'amount'
-                    },
+                    }/*,
                     {
                         data: 'amount'
-                    },
+                    }*/,
                     {
                         data: 'created_at'
                     }
