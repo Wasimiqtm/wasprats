@@ -11,7 +11,7 @@
         <div class="pcoded-content">
             <a class="btn btn-primary" id="addPayment">Add Payment</a>
             <x-breadcrumb title="{{ $job->services->name }} Payments" />
-            
+
             <ul class="nav nav-pills mb-4 bg-white" id="myTab" role="tablist">
                 <li class="nav-item ">
                     <a class=" nav-link text-uppercase" href="{{ route('amount.invoice', $job->services->id)}}">Print Invoice</a>
@@ -25,7 +25,7 @@
                 <li class="nav-item">
                     <a class=" nav-link text-uppercase {{$tab ==='partial'?'active':''}}" href="{{route('service.payments.ajax', [ $job->id ]) . '?tab=partial' }}">Partial Payments</a>
                 </li>
-                
+
 
             </ul>
 
@@ -35,7 +35,7 @@
                 <div class="col-xl-12 col-md-12">
                     <div class="card user-profile-list">
                         <div class="card-body-dd theme-tbl">
-                            <x-table action="false" checkbox="false" :keys="['Service Name', 'Customer', 'Technician', 'Payment Mode', 'Total', 'Amount Paid', 'Date']" />
+                            <x-table action="false" checkbox="false" :keys="['Service Name', 'Customer', 'Technician', 'Payment Mode', 'Total', 'Amount Paid', 'Date', '']" />
                         </div>
                     </div>
                 </div>
