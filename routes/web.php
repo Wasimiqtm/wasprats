@@ -39,6 +39,13 @@ use \App\Http\Controllers\PaymentsController;
 |
 */
 
+Route::get('/clear-cache', function() {
+    \Illuminate\Support\Facades\Artisan::call('config:clear');
+    \Illuminate\Support\Facades\Artisan::call('cache:clear');
+    \Illuminate\Support\Facades\Artisan::call('config:cache');
+    return "All cache cleared";
+});
+
 Route::redirect('/', 'dashboard');
 
 Route::get('/dashboard', function () {
