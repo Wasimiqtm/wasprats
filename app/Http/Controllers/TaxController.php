@@ -94,6 +94,7 @@ class TaxController extends Controller
      */
     public function edit(Tax $tax)
     {
+        dd($tax);
         return view('taxes.edit', compact('tax'));
     }
 

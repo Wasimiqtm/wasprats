@@ -22,6 +22,7 @@ use App\Http\Controllers\SettingController;
 use App\Http\Controllers\SourceController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\TaxController;
+use App\Http\Controllers\UsedItemController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\CustomerLocationController;
 use App\Http\Controllers\JobController;
@@ -115,6 +116,9 @@ Route::middleware(['auth'])->group(function () {
 
     Route::resource('taxes', TaxController::class);
     Route::post('taxes/ajax', [TaxController::class, 'index'])->name('taxes.ajax');
+
+    Route::resource('used-items', UsedItemController::class)->names('things');
+    Route::post('used-items/ajax', [UsedItemController::class, 'index'])->name('things.ajax');
 
     Route::resource('methods', MethodController::class);
     Route::post('methods/ajax', [MethodController::class, 'index'])->name('methods.ajax');

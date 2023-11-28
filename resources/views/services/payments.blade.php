@@ -79,12 +79,21 @@
                             </div>
 
                             <div class="form-group">
-                                <label class="form-label" for="exampleFormControlSelect1">Payment Mode</label>
+                                <label class="form-label"  for="exampleFormControlSelect1">Payment Mode</label>
                                 <select class="form-select" id="paymentMode">
                                     <option value="full">Full</option>
                                     <option value="partial">Partial</option>
                                 </select>
 
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label " for="FormControlSelect">Used Things</label>
+                                <select class="form-select" multiple id="usedThings">
+                                @foreach ($usedThings as $thing)
+                                    <option value="{{$thing->id}}">{{$thing->name}}</option>
+                                @endforeach
+                                </select>
                             </div>
 
                             <div class="form-group">
@@ -160,6 +169,7 @@
                 var customerId = $("#customerId").val();
                 var userId = $("#userId").val();
                 var paymentMode = $("#paymentMode").val();
+                var usedThings = $("#usedThings").val();
                 var amount = $("#amount").val();
                 var description = $("#description").val();
                 $.ajax({
@@ -172,6 +182,7 @@
                         customer_id: customerId,
                         user_id: userId,
                         payment_mode: paymentMode,
+                        used_things: usedThings,
                         amount:amount,
                         description:description
                     },

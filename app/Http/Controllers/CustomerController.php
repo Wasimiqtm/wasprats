@@ -33,7 +33,7 @@ class CustomerController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $customers = Customer::query();
+            $customers = Customer::query()->latest();
             $user = Auth::user();
 
             return Datatables::of($customers)

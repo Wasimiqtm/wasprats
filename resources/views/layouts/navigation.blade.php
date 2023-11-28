@@ -94,6 +94,14 @@
                         </a>
                     </li>
                 @endcan
+                 @can('UsedItem Index')
+                    <li class="nav-item">
+                        <a href="{{ route('things.index') }}" class="nav-link ">
+                            <span class="pcoded-micon"><i class="feather icon-settings"></i></span>
+                            <span class="pcoded-mtext">Used Items</span>
+                        </a>
+                    </li>
+                @endcan
                 @can('Countries Index')
                     <li class="nav-item">
                         <a href="{{ route('countries.index') }}" class="nav-link ">

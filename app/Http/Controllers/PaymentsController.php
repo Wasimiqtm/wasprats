@@ -5,8 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Customer;
 use App\Models\ScheduleJob;
 use App\Models\Service;
-use App\Models\ServicePayment;
 use App\Models\User;
+use App\Models\ServicePayment;
+use App\Models\UsedItem;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Session;
@@ -28,7 +29,7 @@ class PaymentsController extends Controller
         if ($request->filled('tab') && in_array($request->tab, ['full', 'partial'])) {
             $tab = $request->tab;
         }
-        $services = ServicePayment::with('service', 'customer', 'user')->where('schedule_job_id', $serviceId)->get();
+        $services = ServicePayment::with('service', 'customer', 'user')->where('schedule_job_id', $serviceId)->latest()->get();
         if ($request->ajax()) {
             $services = ServicePayment::with('service', 'customer', 'user')->where('service_id', $serviceId);
             switch ($tab) {
@@ -68,8 +69,8 @@ class PaymentsController extends Controller
                 $users[] = $user;
             }
         }
-
-        return view('services.payments', compact('service', 'customers', 'users', 'job'), get_defined_vars());
+        $usedThings = UsedItem::latest()->get();
+        return view('services.payments', compact('service', 'customers', 'users', 'job', 'usedThings'), get_defined_vars());
     }
 
     /**
@@ -86,6 +87,7 @@ class PaymentsController extends Controller
             'user_id' => $request->user_id,
             'payment_mode' => $request->payment_mode,
             'amount' => $request->amount,
+            'used_things' => json_encode($request->used_things),
             'description' => $request->description
         ];
         ServicePayment::create($data);
@@ -176,6 +178,15 @@ class PaymentsController extends Controller
         $currentTime = Carbon::now();
         $fileName =  $currentTime->toDateTimeString();
         $servicePayment = ServicePayment::where('id', $servicePaymentId)->with('service', 'customer', 'user')->first();
+         $usedItems = [];
+         $usedThings = isset($servicePayment->used_things) ? json_decode($servicePayment->used_things) : null;
+        if($usedThings) {
+           $usedItems =  UsedItem::whereIn('id', $usedThings)->get()->pluck('name');
+        }
+        $servicePayment->usedItems = $usedItems;
+        $netAmount = ($servicePayment->amount * 20)/100;
+        $servicePayment->staticVat = $netAmount;
+        $servicePayment->newAmount = $servicePayment->amount + $netAmount;
         view()->share('servicePayment',$servicePayment);
         $pdf = PDF::loadView('services.single_payment_invoice');
         return $pdf->download($fileName.' payment invoice.pdf');

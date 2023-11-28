@@ -75,9 +75,26 @@
     .total-right p{
         padding-right:20px;
     }
+    .left-side {
+      background-color: white;
+      width: 200px;
+      height: 100px;
+      border: 1px solid grey;
+      padding: 50px;
+      margin: 20px;
+    }
+    #wrapper {
+        overflow: hidden;
+        background-color: lightgrey;
+    }
+    #c1 {
+       float:left;
+    }
+    #c2 {
+        float: right
+    }
 </style>
-<body>
-
+<body>       
 <div class="head-title">
     <h1 class="text-center m-0 p-0">Invoice</h1>
 </div>
@@ -118,12 +135,21 @@
     <table class="table w-100 mt-10">
         <tr>
             <th class="w-50">Description</th>
-            <th class="w-50">{{$servicePayment->description}}</th>
+            <td class="w-50">{{$servicePayment->description}}</td>
         </tr>
-       <!--  <tr>
-            <td>Cash On Delivery</td>
-            <td>Free Shipping - Free Shipping</td>
-        </tr> -->
+        <tr>
+            <th>Used Things</th>
+            <td>
+            @if(count($servicePayment->usedItems) > 1)
+                @foreach($servicePayment->usedItems as $item)
+                    <p>{{$item}}</p>
+                @endforeach
+            @else
+                <p>Not Found</p>
+            @endif
+
+         </td>
+        </tr>
     </table>
 </div>
 <div class="table-section bill-tbl w-100 mt-10">
@@ -132,12 +158,14 @@
             <td colspan="7">
                 <div class="total-part">
                     <div class="total-left w-85 float-left" align="right">
-                        <p>Total</p>
-                        <p>Amount Paid</p>
+                        <p>Amount</p>
+                         <p>Static Vat (20%)</p>
+                        <p>Total Amount Paid</p>
                     </div>
                     <div class="total-right w-15 float-left text-bold" align="right">
-                        <p>{{$servicePayment->service->service_amount}}</p>
                         <p>{{$servicePayment->amount}}</p>
+                        <p>{{$servicePayment->staticVat}}</p>
+                        <p>{{$servicePayment->newAmount}}</p>
                     </div>
                     <div style="clear: both;"></div>
                 </div> 
@@ -145,4 +173,19 @@
         </tr>
     </table>
 </div>
+<div class="table-section bill-tbl w-100 mt-10">
+    <table class="table w-100 mt-10">
+        <tr>
+            <td class="w-50"><h3 align="center">Technician Signature</h3></td>
+            <td class="w-50"><h3 align="center">Customer Signature</h3></td>
+        </tr>
+        <tr>
+            <th class="left-side"></th>
+            <th class="left-side"></th>
+            
+         </td>
+        </tr>
+    </table>
+</div>
+</body>
 </html>

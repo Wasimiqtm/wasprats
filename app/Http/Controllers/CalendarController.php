@@ -25,7 +25,7 @@ class CalendarController extends Controller
     {
         $customers = Customer::all()->pluck('name', 'id');
         $services = Service::pluck('name', 'id');
-        $jobs = ScheduleJob::with('services', 'customer')->get();
+        $jobs = ScheduleJob::where('status',"active")->with('services', 'customer')->get();
 
         $events = [];
         foreach($jobs as $job){

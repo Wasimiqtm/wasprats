@@ -1,4 +1,5 @@
-	<!-- [ Header ] start -->
+<?php $auth = Auth::user();?>
+    <!-- [ Header ] start -->
 	<header class="navbar pcoded-header navbar-expand-lg navbar-light headerpos-fixed header-blue">
 		
 			
@@ -47,7 +48,7 @@
                                     <div class="media">
                                         <img class="img-radius" src="{{ asset('images') }}/user/avatar-1.jpg" alt="Generic placeholder image">
                                         <div class="media-body">
-                                            <p><strong>John Doe</strong><span class="n-time text-muted"><i class="icon feather icon-clock m-r-10"></i>5 min</span></p>
+                                            <p><strong>{{$auth->name}}</strong><span class="n-time text-muted"><i class="icon feather icon-clock m-r-10"></i>5 min</span></p>
                                             <p>New ticket Added</p>
                                         </div>
                                     </div>
@@ -97,7 +98,7 @@
                         <div class="dropdown-menu dropdown-menu-end profile-notification">
                             <div class="pro-head">
                                 <img src="{{ asset('images') }}/user/avatar-1.jpg" class="img-radius" alt="User-Profile-Image">
-                                <span>John Doe</span>
+                                <span>{{$auth->name}}</span>
                                 <a href="{{ route('logout') }}" class="dud-logout" title="Logout">
                                     <i class="feather icon-log-out"></i>
                                 </a>
