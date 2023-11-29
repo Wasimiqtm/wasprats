@@ -25,15 +25,6 @@
                     {
                         data: 'name'
                     },
-                    // {
-                    //     data: 'rate'
-                    // },
-                    // {
-                    //     data: 'is_active',
-                    //     width: '10%',
-                    //     orderable: false,
-                    //     searchable: false
-                    // },
                     {
                         data: 'action',
                         width: '15%',

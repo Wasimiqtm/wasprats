@@ -12,13 +12,15 @@ use App\Models\InvoiceDetail;
 use App\Models\Item;
 use App\Models\Schedule;
 use App\Models\Service;
+use App\Models\CustomerLocation;
 use App\Models\Tax;
 use App\Models\User;
 use Illuminate\Http\Request;
-
+use App\Mail\JobEmail;
 use App\Http\Requests\CustomerRequest;
 use App\Models\Customer;
 use Illuminate\Support\Facades\DB;
+use Mail;
 use Session;
 use DataTables;
 use Auth;
@@ -32,6 +34,9 @@ class CustomerController extends Controller
      */
     public function index(Request $request)
     {
+        // $email = new JobEmail("rao nasir","first email","hello world");
+        // Mail::to("raonasir990@gmail.com")->send($email);
+        // dd('done');
         if ($request->ajax()) {
             $customers = Customer::query()->latest();
             $user = Auth::user();
@@ -165,9 +170,10 @@ class CustomerController extends Controller
         $services = Service::all();
 
         $taxes = Tax::get();
+        $customerLocation = CustomerLocation::where('customer_id',$customer->id )->orderBy('id','desc')->get();
         $schedules = Schedule::with('user')->get();
 
-        return view('customers.details',compact('id','customerNotes','users','customerTask','items','taxes','services','customer','schedules'));
+        return view('customers.details',compact('id','customerNotes','users','customerTask','items','taxes','services','customer','schedules','customerLocation'));
     }
 
     public function addCustomerNotes()

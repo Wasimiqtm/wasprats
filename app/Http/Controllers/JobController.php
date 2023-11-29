@@ -176,6 +176,7 @@ class JobController extends Controller
      */
     function updateJob(Request $request)
     {
+
         $from = explode('T', $request->from);
         $requestData['from_date'] = $from[0];
         if (isset($from[1])) {
@@ -184,17 +185,19 @@ class JobController extends Controller
         } else {
             $requestData['from_time'] = '00:00:00';
         }
-
-        $to = explode('T', $request->to);
-        $requestData['to_date'] = $to[0];
-        if (isset($to[1])) {
-            $toTime = explode('+', $to[1]);
-            $requestData['to_time'] = $toTime[0];
-        } else {
-            $requestData['to_time'] = '23:59:59';
+        if(isset($request->to)) {
+            $to = explode('T', $request->to);
+            $requestData['to_date'] = $to[0];
+            if (isset($to[1])) {
+                $toTime = explode('+', $to[1]);
+                $requestData['to_time'] = $toTime[0];
+            } else {
+                $requestData['to_time'] = '23:59:59';
+            }
         }
 
         $job = Job::find($request->id);
+        dd($job);
         if ($job) {
             $job->update($requestData);
         }

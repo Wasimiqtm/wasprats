@@ -37,15 +37,17 @@
                         <div class="form-group row">
                             <label class="col-form-label col-lg-3 col-sm-12 text-lg-end">Customer</label>
                             <div class="col-lg-9 col-sm-12">
-                                <input type="text" class="form-control " id="task_name" placeholder="Customer Search" value="{{$customer->name}}">
+                                <input type="text" class="form-control " id="task_name" placeholder="Customer Search" value="{{$customer->name}}" disabled>
                             </div>
                         </div>
                         <div class="form-group row">
                             <label class="col-form-label col-lg-3 col-sm-12 text-lg-end">Address</label>
                             <div class="col-lg-9 col-sm-12">
                                 <select name="location" id="CustomerJob_customer_location_id">
-                                    <option value=""></option>
-                                    <option value="1">Home</option>
+                                    <option>Select Location</option>
+                                    @foreach($customerLocation as $location)
+                                        <option value="{{$location->id}}">{{$location->name}}</option>
+                                    @endforeach
                                 </select>
                             </div>
                         </div>

@@ -44,3 +44,8 @@ if(@$user) {
     {!! Form::select('role_id', $roles, null, ['class' => 'form-control ' . $errors->first('role_id', 'error'), 'placeholder' => 'Role', 'required']) !!}
     {!! $errors->first('role_id', '<label class="error">:message</label>') !!}
 </div>
+<div class="form-group col-md-6">
+    {!! Form::label('address', 'Address', ['class' => 'form-label required-input']) !!}
+    {!! Form::text('address', null, ['class' => 'form-control ' . $errors->first('address', 'error'), 'placeholder' => 'Address', 'required', 'maxlength' => '50']) !!}
+    {!! $errors->first('address', '<label class="error">:message</label>') !!}
+</div>
