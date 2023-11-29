@@ -197,7 +197,6 @@ class JobController extends Controller
         }
 
         $job = Job::find($request->id);
-        dd($job);
         if ($job) {
             $job->update($requestData);
         }
