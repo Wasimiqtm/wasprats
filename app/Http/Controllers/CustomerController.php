@@ -20,6 +20,7 @@ use App\Mail\JobEmail;
 use App\Http\Requests\CustomerRequest;
 use App\Models\Customer;
 use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Mail;
 use Session;
 use DataTables;
@@ -34,9 +35,7 @@ class CustomerController extends Controller
      */
     public function index(Request $request)
     {
-        // $email = new JobEmail("rao nasir","first email","hello world");
-        // Mail::to("raonasir990@gmail.com")->send($email);
-        // dd('done');
+
         if ($request->ajax()) {
             $customers = Customer::query()->latest();
             $user = Auth::user();

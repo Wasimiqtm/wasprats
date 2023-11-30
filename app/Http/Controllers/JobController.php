@@ -8,9 +8,11 @@ use App\Models\Invoice;
 use App\Models\Job;
 use App\Models\ScheduleJob;
 use App\Models\Service;
+use App\Models\CustomerLocation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-
+use Barryvdh\DomPDF\Facade\Pdf;
+use Mail;
 use Session;
 use DataTables;
 use Auth;
@@ -231,8 +233,43 @@ class JobController extends Controller
             'total' => $service->invoice_total,
             'frequency' => \request()->repeat_frequency
         ]);
+        // Send email
+        $customerLocation = CustomerLocation::where('id',\request()->location)->first();
+        $userMail = (isset($data->schedule) && isset($data->schedule->user)) ? $data->schedule->user->email : null;
+        $customerMail = isset($customer) ? $customer->email : null;
+        $usersEmail = [$userMail,$customerMail];
+        foreach ($usersEmail as $key => $emailData) {
 
-        return $this->sendResponse(true, 'Job successfully updated');
+        $displayData = ['id' => $data->id,
+                        'created_at' => $data->created_at,
+                        'date' => $data->date,
+                        'time' => $data->time,
+                        'hours' => $data->hours,
+                        'minutes' => $data->minutes,
+                        'recurance' => $data->recurance,
+                        'confirmed' => ($data->confirmed == 1) ? 'Yes' : 'No',
+                        'repeat_frequency' => $data->repeat_frequency,
+                        'customer_status' => ($data->customer_status == 1) ? 'Yes' : 'No',
+                        'notes' => $data->notes,
+                        'customer' => $customer->first_name. ' ' .$customer->last_name,
+                        'service' => $service->name,
+                        'customer_location' => $customerLocation->name,
+                        'total' => $service->invoice_total,
+                        'user' => (isset($data->schedule) && isset($data->schedule->user)) ? $data->schedule->user->name : null
+                    ];
+        // view()->share('displayData')->with(['displayData'=> $displayData]);
+        $pdf = PDF::loadView('customers.job_file', compact('displayData'));
+        $detail["email"] = $emailData;
+        $detail["title"] = "Job Confirmation";
+        $detail["body"] = "An invoice is a document that charges a customer for goods or services you've provided. Also called a bill, an invoice shows all the information about a transaction. This includes: the quantity of any goods or services provided. the rate charged.";
+    
+        Mail::send('customers.send-job-email', $detail, function($message)use($detail, $pdf) {
+            $message->to($detail["email"], $detail["email"])
+                    ->subject($detail["title"])
+                    ->attachData($pdf->output(), 'job-confirmation-invoice.pdf');
+        });
+    }
+          return $this->sendResponse(true, 'Job successfully updated');
     }
 
     public function customerJobDetails()

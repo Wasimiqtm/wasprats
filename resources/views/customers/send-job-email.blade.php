@@ -7,8 +7,8 @@
 
   	<p>{{ $body }}</p>
 
-	<div align="right">
-   		<h1>Hello World...</h1>
+	<div align="left">
+   		<h3>Kindly see the attachment.</h3>
    </div>
   </body>
  </html>
