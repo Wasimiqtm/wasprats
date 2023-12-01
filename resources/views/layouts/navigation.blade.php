@@ -73,7 +73,14 @@
                         </a>
                     </li>
                 @endcan
-
+                @can('Customers Jobs Invoices Index')
+                <li class="nav-item">
+                        <a href="{{ route('customers.jobs.invoices') }}" class="nav-link ">
+                            <span class="pcoded-micon"><i class="feather icon-home"></i></span>
+                            <span class="pcoded-mtext">Customers Invoices</span>
+                        </a>
+                    </li>
+                @endcan
                 <li class="nav-item pcoded-menu-caption">
                     <label>Settings</label>
                 </li>
@@ -212,8 +219,7 @@
                             <span class="pcoded-mtext">Customers</span>
                         </a>
                     </li>
-
-
+                
                 @canany(['Settings Templates Index', 'Settings Tiles Index'])
                         <li class="nav-item pcoded-menu-caption">
                             <label>Custom Settings</label>

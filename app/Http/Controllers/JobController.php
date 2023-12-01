@@ -325,4 +325,49 @@ class JobController extends Controller
         ScheduleJob::whereId(\request()->job_id)->update($data);
         return $this->sendResponse(true, 'Job successfully updated');
     }
+
+    public function customersJobsInvoices(Request $request)
+    {
+        $schedule = ScheduleJob::with(['customer', 'invoice', 'services', 'schedule.user'])->get();
+        if ($request->ajax()) {
+        
+        return DataTables::of($schedule)
+            ->addColumn('service_name', function ($data) {
+                return $data->services->name;
+            })
+            ->addColumn('customer_name', function ($data) {
+                return $data->customer->first_name.' '.$data->customer->last_name;
+            })
+            ->addColumn('technician_name', function ($data) {
+                if ($data->schedule->user) {
+                    return $data->schedule->user->name;
+                } else {
+                    return $data->schedule->name;
+                }
+            })->addColumn('total', function ($data) {
+                if ($data->invoice) {
+                    return $data->invoice->total;
+                } else {
+                    return 0;
+                }
+            })
+            // ->addColumn('action', function ($customer) {
+
+            //     $action = '<td><div class="overlay-edit">';
+
+
+            //     $action .= '<a href="javascript:void(0)" class="btn btn-icon btn-secondary editRecord" data-id="' . $customer->id . '" data-status="' . $customer->status . '" title="Jobs"><i class="feather icon-edit"></i></a>';
+
+
+            //     $action .= '</div></td>';
+
+            //     return $action;
+            // })
+            ->editColumn('id', 'ID: {{$id}}')
+            ->rawColumns(['action'])
+            ->make(true);
+            }
+
+        return view('customers.customers-jobs-invoices');
+    }
 }

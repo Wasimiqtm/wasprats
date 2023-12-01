@@ -227,10 +227,9 @@ class UserController extends Controller
             $user = User::where('uuid',\request()->id)->first();
 
             $jobs = ScheduleJob::with(['services','customer'])->whereIn('schedule_id',$user->schedules->pluck('id'))->where('status',\request()->type)->latest()->get();
-
            return  Datatables::of($jobs)
                 ->addColumn('service_name',function ($item){
-                    return $item->services->name;
+                    return $item->services->name.''.$item->id;
                 })
                ->addColumn('action', function ($item) {
                    $action = '<td><div class="overlay-edit">';

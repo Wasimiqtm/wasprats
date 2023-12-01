@@ -174,7 +174,6 @@ class PaymentsController extends Controller
 
     public function singlePaymentInvoice($servicePaymentId)
     {
-
         $currentTime = Carbon::now();
         $fileName =  $currentTime->toDateTimeString();
         $servicePayment = ServicePayment::where('id', $servicePaymentId)->with('service', 'customer', 'user')->first();
@@ -184,9 +183,10 @@ class PaymentsController extends Controller
            $usedItems =  UsedItem::whereIn('id', $usedThings)->get()->pluck('name');
         }
         $servicePayment->usedItems = $usedItems;
-        $netAmount = ($servicePayment->amount * 20)/100;
+        $netAmount = ($servicePayment->service->service_amount * 20)/100;
         $servicePayment->staticVat = $netAmount;
-        $servicePayment->newAmount = $servicePayment->amount + $netAmount;
+        $servicePayment->newAmount = $servicePayment->service->service_amount + $netAmount;
+        
         view()->share('servicePayment',$servicePayment);
         $pdf = PDF::loadView('services.single_payment_invoice');
         return $pdf->download($fileName.' payment invoice.pdf');
