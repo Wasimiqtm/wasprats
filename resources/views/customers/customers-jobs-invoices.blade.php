@@ -1,3 +1,15 @@
+<style>
+    td span.details-control {
+        background: url(../images/details_open.png) no-repeat center center;
+        cursor: pointer;
+        width: 18px;
+        padding: 12px;
+    }
+    tr.shown td span.details-control {
+        background: url(../images/details_close.png) no-repeat center center;
+    }
+</style>
+
 <x-app-layout>
     <div class="pcoded-main-container">
         <div class="pcoded-content">
