@@ -76,7 +76,7 @@
         padding-right:20px;
     }
 </style>
-<body>
+<body onload="window.print()">
 <div class="head-title">
     <h1 class="text-center m-0 p-0">Invoice</h1>
 </div>

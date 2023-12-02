@@ -127,4 +127,8 @@ class Service extends Model
     {
         return $this->hasMany(ScheduleJob::class);
     }
+    public function service_payment()
+    {
+        return $this->hasMany(ServicePayment::class,'service_id','id');
+    }
 }
