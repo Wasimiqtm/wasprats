@@ -159,13 +159,15 @@
                 <div class="total-part">
                     <div class="total-left w-85 float-left" align="right">
                         <p>Amount</p>
-                         <p>Static Vat (20%)</p>
-                        <p>Total Amount Paid</p>
+                         <p>Vat (20%)</p>
+                        <p>Total amount</p>
+                        <p>Amount paid</p>
                     </div>
                     <div class="total-right w-15 float-left text-bold" align="right">
-                        <p>{{$servicePayment->amount}}</p>
+                        <p>{{$servicePayment->service->service_amount}}</p>
                         <p>{{$servicePayment->staticVat}}</p>
                         <p>{{$servicePayment->newAmount}}</p>
+                        <p>{{$servicePayment->amount}}</p>
                     </div>
                     <div style="clear: both;"></div>
                 </div> 

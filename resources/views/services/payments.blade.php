@@ -1,5 +1,10 @@
 <x-app-layout>
 
+<style>
+    title {
+        width: 100%;
+    }
+</style>
     <?php
         if (in_array($tab, ['full', 'partial'])) {
             $tab = $request->tab;
@@ -87,14 +92,23 @@
 
                             </div>
 
-                            <div class="form-group">
+                            {{-- <div class="form-group">
                                 <label class="form-label " for="FormControlSelect">Used Things</label>
-                                <select class="form-select" multiple id="usedThings">
+                                <select class="form-control select2" multiple id="usedThings">
                                 @foreach ($usedThings as $thing)
                                     <option value="{{$thing->id}}">{{$thing->name}}</option>
                                 @endforeach
                                 </select>
-                            </div>
+                            </div> --}}
+                            <div class="form-group ">
+                                <label class="form-label " for="FormControlSelect">Used Things</label>
+                            <div class="row d-flex justify-content-center mt-100">
+                                <div class="col-md-12"> <select id="choices-multiple-remove-button" placeholder="Select Used Things" multiple>
+                                        @foreach ($usedThings as $thing)
+                                           <option value="{{$thing->id}}">{{$thing->name}}</option>
+                                        @endforeach
+                                    </select> </div>
+                            </div> 
 
                             <div class="form-group">
                                 <label class="form-label">Amount Payable</label>
@@ -169,7 +183,7 @@
                 var customerId = $("#customerId").val();
                 var userId = $("#userId").val();
                 var paymentMode = $("#paymentMode").val();
-                var usedThings = $("#usedThings").val();
+                var usedThings = $("#choices-multiple-remove-button").val();
                 var amount = $("#amount").val();
                 var description = $("#description").val();
                 $.ajax({
@@ -196,6 +210,20 @@
             });
         </script>
     @endpush
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.css">
+<script src="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.js"></script>
 
+<!-- Initialize Select2 -->
+<script>
+       $(document).ready(function(){
+    
+     var multipleCancelButton = new Choices('#choices-multiple-remove-button', {
+        removeItemButton: true,
+      }); 
+     
+     
+ });
+</script>
 
 </x-app-layout>

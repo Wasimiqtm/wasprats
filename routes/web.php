@@ -60,6 +60,9 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('jobs', JobController::class);
     Route::post('update-job', [JobController::class, 'updateJob'])->name('update-job');
 
+    Route::get('customers-jobs-invoices', [JobController::class, 'customersJobsInvoices'])->name('customers.jobs.invoices');
+    Route::POST('customers-jobs-invoices',[JobController::class, 'customersJobsInvoices'])->name('customers.jobs.invoices.ajax');
+
     Route::get('change-password', [UserController::class, 'changePassword'])->name('change-password');
     Route::post('change-password', [UserController::class, 'updatePassword'])->name('users.change-password');
 
