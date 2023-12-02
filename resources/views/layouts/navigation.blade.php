@@ -73,14 +73,14 @@
                         </a>
                     </li>
                 @endcan
-                @can('Customers Jobs Invoices Index')
+                {{-- @can('Customers Jobs Invoices Index')
                 <li class="nav-item">
                         <a href="{{ route('customers.jobs.invoices') }}" class="nav-link ">
                             <span class="pcoded-micon"><i class="feather icon-home"></i></span>
                             <span class="pcoded-mtext">Customers Invoices</span>
                         </a>
                     </li>
-                @endcan
+                @endcan --}}
                 <li class="nav-item pcoded-menu-caption">
                     <label>Settings</label>
                 </li>
@@ -184,7 +184,7 @@
                         <label>Reports</label>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('invoices') }}" class="nav-link ">
+                        <a href="{{ route('customers.jobs.invoices') }}" class="nav-link ">
                             <span class="pcoded-micon"><i class="feather icon-home"></i></span>
                             <span class="pcoded-mtext">All Invoices</span>
                         </a>

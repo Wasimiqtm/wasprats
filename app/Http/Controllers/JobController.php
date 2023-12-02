@@ -327,7 +327,8 @@ class JobController extends Controller
 
     public function customersJobsInvoices(Request $request)
     {
-        $schedule = ScheduleJob::with(['customer', 'invoice', 'services', 'schedule.user'])->get();
+        $schedule = ScheduleJob::with(['customer', 'invoice', 'services.service_payment', 'schedule.user'])->get();
+        // dd($schedule[4]);
         if ($request->ajax()) {
         
         return DataTables::of($schedule)
@@ -343,12 +344,9 @@ class JobController extends Controller
                 } else {
                     return $data->schedule->name;
                 }
-            })->addColumn('total', function ($data) {
-                if ($data->invoice) {
-                    return $data->invoice->total;
-                } else {
-                    return 0;
-                }
+            })
+            ->addColumn('status', function ($data) {
+                    return $data->status;
             })
             // ->addColumn('action', function ($customer) {
 

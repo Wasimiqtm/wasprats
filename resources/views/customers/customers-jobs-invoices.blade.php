@@ -10,7 +10,7 @@
                                 'Service Name',
                                 'Customer Name',
                                 'Technician Name',
-                                'Total',
+                                'Status',
                             ]"/>
                     </div>
                 </div>
@@ -35,7 +35,7 @@
                     data: 'technician_name'
                 },
                 {
-                    data: 'total'
+                    data: 'status'
                 }
             ];
 

@@ -166,9 +166,10 @@ class PaymentsController extends Controller
         $currentTime = Carbon::now();
         $fileName =  $currentTime->toDateTimeString();
         $items = ServicePayment::with('service', 'customer', 'user')->where('service_id', $serviceId)->get();
-        view()->share('items',$items);
-        $pdf = PDF::loadView('services.amount_invoice');
-        return $pdf->download($fileName.'invoice.pdf');
+        return view('services.amount_invoice', compact('items'));
+        // view()->share('items',$items);
+        // $pdf = PDF::loadView('services.amount_invoice');
+        // return $pdf->download($fileName.'invoice.pdf');
 
     }
 
@@ -186,10 +187,10 @@ class PaymentsController extends Controller
         $netAmount = ($servicePayment->service->service_amount * 20)/100;
         $servicePayment->staticVat = $netAmount;
         $servicePayment->newAmount = $servicePayment->service->service_amount + $netAmount;
-        
-        view()->share('servicePayment',$servicePayment);
-        $pdf = PDF::loadView('services.single_payment_invoice');
-        return $pdf->download($fileName.' payment invoice.pdf');
+        return view('services.single_payment_invoice', compact('servicePayment'));
+        // view()->share('servicePayment',$servicePayment);
+        // $pdf = PDF::loadView('services.single_payment_invoice');
+        // return $pdf->download($fileName.' payment invoice.pdf');
 
     }
 }

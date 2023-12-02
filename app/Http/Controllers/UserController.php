@@ -223,7 +223,7 @@ class UserController extends Controller
     {
             $user = User::where('uuid',\request()->id)->first();
 
-            $jobs = ScheduleJob::with(['services','customer'])->whereIn('schedule_id',$user->schedules->pluck('id'))->where('status',\request()->type)->latest()->get();
+            $jobs = ScheduleJob::with(['services','customer'])->latest()->get();
 
 
         return view('users.print-jobs-data');
@@ -258,9 +258,10 @@ class UserController extends Controller
         $fileName =  $currentTime->toDateTimeString();
         $user = User::where('uuid',$userId)->first();
         $jobs = ScheduleJob::with(['services','customer'])->whereIn('schedule_id',$user->schedules->pluck('id'))->get();
-        view()->share('jobs',$jobs);
-        $pdf = PDF::loadView('users.invoice_jobs');
-        return $pdf->download($fileName.'invoice.pdf');
+         return view('users.invoice_jobs', compact('jobs'));
+        // view()->share('jobs',$jobs);
+        // $pdf = PDF::loadView('users.invoice_jobs');
+        // return $pdf->download($fileName.'invoice.pdf');
 
     }
 
