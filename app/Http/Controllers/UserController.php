@@ -219,6 +219,16 @@ class UserController extends Controller
         return redirect()->route('change-password');
     }
 
+    public function printJobsData()
+    {
+            $user = User::where('uuid',\request()->id)->first();
+
+            $jobs = ScheduleJob::with(['services','customer'])->whereIn('schedule_id',$user->schedules->pluck('id'))->where('status',\request()->type)->latest()->get();
+
+
+        return view('users.print-jobs-data');
+    }
+
     public function getJobsDetails()
     {
 

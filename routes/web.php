@@ -66,6 +66,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('users', UserController::class);
     Route::post('users/ajax', [UserController::class, 'index'])->name('users.ajax');
     Route::any('users-get-active-jobs', [UserController::class, 'getJobsDetails'])->name('users.get.active.jobs');
+    Route::get('print-jobs-data', [UserController::class, 'printJobsData'])->name('users.print.jobs.data');
     Route::get('job-invoice/{user_id}', [UserController::class, 'jobInvoice'])->name('job.invoice');
 
     /*list payments technician*/
