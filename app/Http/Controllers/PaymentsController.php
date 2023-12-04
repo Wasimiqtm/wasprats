@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\ServicePayment;
 use App\Models\UsedItem;
 use Illuminate\Http\Request;
+use App\Http\Requests\ServicePaymentRequest;
 use Carbon\Carbon;
 use Session;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -70,14 +71,21 @@ class PaymentsController extends Controller
             }
         }
         $usedThings = UsedItem::latest()->get();
-        return view('services.payments', compact('service', 'customers', 'users', 'job', 'usedThings'), get_defined_vars());
+        $scheduleJob = ScheduleJob::whereId($serviceId)->pluck('service_id')->first();
+        $usedServicePayment = ServicePayment::where('service_id', $scheduleJob)->sum('amount');
+        $getServiceAmount = Service::where('id', $scheduleJob)->pluck('service_amount')->first();
+        $checkAmount = 0 ;
+        if((int) $usedServicePayment >= (int) $getServiceAmount ) {
+            $checkAmount = 1 ;
+        }
+        return view('services.payments', compact('service', 'customers', 'users', 'job', 'usedThings', 'checkAmount'), get_defined_vars());
     }
 
     /**
      * Add payment against a service
      *
      */
-    public function addServicePayment(Request $request)
+    public function addServicePayment(ServicePaymentRequest $request)
     {
         $service =  Service::where('id', $request->service_id)->first();
         $data = [
@@ -187,6 +195,7 @@ class PaymentsController extends Controller
         $netAmount = ($servicePayment->service->service_amount * 20)/100;
         $servicePayment->staticVat = $netAmount;
         $servicePayment->newAmount = $servicePayment->service->service_amount + $netAmount;
+        $servicePayment->remainingAmount = $servicePayment->service->service_amount - $servicePayment->amount;
         return view('services.single_payment_invoice', compact('servicePayment'));
         // view()->share('servicePayment',$servicePayment);
         // $pdf = PDF::loadView('services.single_payment_invoice');
