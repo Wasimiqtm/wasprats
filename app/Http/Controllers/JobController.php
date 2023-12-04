@@ -208,7 +208,7 @@ class JobController extends Controller
 
     public function assignJob()
     {
-
+        //dd(config('mail.mailers.smtp'));
         $customer = Customer::where('uuid', \request()->customer_id)->first();
         $data = ScheduleJob::create([
             'location_id' => \request()->location,
@@ -327,17 +327,14 @@ class JobController extends Controller
 
     public function customersJobsInvoices(Request $request)
     {
-        $schedule = ScheduleJob::with(['customer', 'invoice', 'services.service_payment', 'schedule.user'])->get();
+        $schedule = ScheduleJob::with(['customer', 'invoice', 'services.service_payment', 'schedule.user']);
         // dd($schedule[4]);
         if ($request->ajax()) {
-        
+
         return DataTables::of($schedule)
-            ->addColumn('service_name', function ($data) {
-                return $data->services->name;
-            })
-            ->addColumn('customer_name', function ($data) {
-                return $data->customer->first_name.' '.$data->customer->last_name;
-            })
+                ->addColumn('payments', function ($product) {
+                    return '<span class="details-control"></span>';
+                })
             ->addColumn('technician_name', function ($data) {
                 if ($data->schedule->user) {
                     return $data->schedule->user->name;
@@ -361,7 +358,7 @@ class JobController extends Controller
             //     return $action;
             // })
             ->editColumn('id', 'ID: {{$id}}')
-            ->rawColumns(['action'])
+            ->rawColumns(['action', 'payments'])
             ->make(true);
             }
 
