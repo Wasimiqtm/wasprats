@@ -11,10 +11,11 @@
         } else {
             $tab = 'all';
         }
+        // dd($checkAmount);
     ?>
     <div class="pcoded-main-container">
         <div class="pcoded-content">
-            <a class="btn btn-primary" id="addPayment">Add Payment</a>
+            <button  class="btn btn-primary" id="addPayment"  {{ ($checkAmount == 1) ? "disabled" : '' }}>Add Payment</button>
             <x-breadcrumb title="{{ $job->services->name }} Payments" />
 
             <ul class="nav nav-pills mb-4 bg-white" id="myTab" role="tablist">
@@ -59,6 +60,7 @@
                         <h5 class="modal-title h4" id="myLargeModalLabel">Add Payment</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
+                    <div id="validation-errors" style="color:red"></div>
                     <div class="modal-body">
                         <form id="credit">
 
@@ -91,15 +93,6 @@
                                 </select>
 
                             </div>
-
-                            {{-- <div class="form-group">
-                                <label class="form-label " for="FormControlSelect">Used Things</label>
-                                <select class="form-control select2" multiple id="usedThings">
-                                @foreach ($usedThings as $thing)
-                                    <option value="{{$thing->id}}">{{$thing->name}}</option>
-                                @endforeach
-                                </select>
-                            </div> --}}
                             <div class="form-group ">
                                 <label class="form-label " for="FormControlSelect">Used Things</label>
                             <div class="row d-flex justify-content-center mt-100">
@@ -205,7 +198,13 @@
                         $("div.modal-backdrop").remove();
                         $("body").css({'overflow': 'auto', 'padding-right': '0px'});
                         window.location.reload();
-                    }
+                    },
+                    error: function (xhr) {
+                       $('#validation-errors').html('');
+                       $.each(xhr.responseJSON.errors, function(key,value) {
+                         $('#validation-errors').append('<div class="alert alert-danger">'+value+'</div');
+                     }); 
+                    },
                 });
             });
         </script>
