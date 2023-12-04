@@ -11,13 +11,6 @@
 </style>
 
 <x-app-layout>
-{{--     <?php
-        if (in_array($tab, ['full', 'partial'])) {
-            $tab = $request->tab;
-        } else {
-            $tab = 'all';
-        }
-    ?> --}}
     <div class="pcoded-main-container">
         <div class="pcoded-content">
             <x-breadcrumb title="Customers Jobs Invoices"/>
@@ -28,35 +21,9 @@
   <div class="dropdown-menu" aria-labelledby="dropdownMenuButtond">
     @foreach ($customers as $customer)
     <button class="dropdown-item" onClick="clickCustomer({{$customer['id']}})">{{$customer['first_name']}} {{$customer['last_name']}}</button>
-    {{-- <a class="dropdown-item" href="{{ url('customers-jobs-invoices?customer_id='.$customer['id']) }}">{{$customer['first_name']}} {{$customer['last_name']}}</a> --}}
     @endforeach
   </div>
 </div>
-             {{-- <ul class="nav nav-pills mb-4 bg-white" id="myTab" role="tablist">
-
-                <li class="nav-item">
-                    <div class="form-group">
-                                <label class="form-label"  for="exampleFormControlSelect1"><b>Select Customer</b></label>
-                                <select class="form-select" id="paymentMode">
-                                    @foreach ($customers as $customer)
-                                           <option value="{{$customer['id']}}">
-<a class="nav-link text-uppercase" href="{{ url('customers-jobs-invoices?customer_id='.$customer['id']) }}">{{$customer['first_name']}} {{$customer['last_name']}}</a>
-
-                                           </option>
-                                        @endforeach
-                                </select>
-                    </div>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-uppercase">Full Payments</a>
-                </li>
-                <li class="nav-item">
-                    <a class=" nav-link text-uppercase">Partial Payments</a>
-                </li>
-
-
-            </ul> --}}
-
              <div class="row">
                 <div style="margin: 20px 0px;">
                     <input type="text" name="daterange" value="" />
