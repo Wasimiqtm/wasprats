@@ -12,6 +12,7 @@ use App\Models\CustomerLocation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Mail;
 use Session;
 use DataTables;
@@ -327,10 +328,27 @@ class JobController extends Controller
 
     public function customersJobsInvoices(Request $request)
     {
-        $schedule = ScheduleJob::with(['customer', 'invoice', 'services.service_payment', 'schedule.user']);
-        // dd($schedule[4]);
+        $dateFilter = json_decode(request()->extra_search);
+        $tab = 'all';
+        if (!empty($dateFilter->customer_id)) {
+            $tab = 'customer';
+        }
+        if(!empty($dateFilter->start_date)){
+            $tab = 'date';
+        }
         if ($request->ajax()) {
-
+             $schedule = ScheduleJob::with(['customer', 'invoice', 'services.service_payment', 'schedule.user']);
+             switch ($tab) {
+                case 'customer':
+                    $schedule->where('customer_id', $dateFilter->customer_id);
+                    break;
+                case 'date':
+                    $schedule->whereDate('created_at', '>=', Carbon::parse($dateFilter->start_date)->format('Y-m-d'))->whereDate('created_at', '<=', Carbon::parse($dateFilter->end_date)->format('Y-m-d'));
+                    break;
+                default:
+                    $schedule;
+                    break;
+            }
         return DataTables::of($schedule)
                 ->addColumn('payments', function ($product) {
                     return '<span class="details-control"></span>';
@@ -342,8 +360,19 @@ class JobController extends Controller
                     return $data->schedule->name;
                 }
             })
+            ->addColumn('payment_status', function ($data) {
+                 if((int) $data->services->service_amount < (int)($data->services->service_payment)->sum('amount')) {
+                    return "Partially Paid";
+                 }else {
+                    return "Fully Paid";
+                 }
+                
+            })
             ->addColumn('status', function ($data) {
                     return $data->status;
+            })
+             ->addColumn('created_at', function ($data) {
+                    return $data->created_at;
             })
             // ->addColumn('action', function ($customer) {
 
@@ -361,7 +390,7 @@ class JobController extends Controller
             ->rawColumns(['action', 'payments'])
             ->make(true);
             }
-
-        return view('customers.customers-jobs-invoices');
+            $customers = Customer::orderBy('created_at','desc')->get(['id','first_name','last_name']);
+        return view('customers.customers-jobs-invoices',compact('customers'));
     }
 }
