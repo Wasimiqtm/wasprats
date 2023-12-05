@@ -362,11 +362,11 @@ class JobController extends Controller
             })
             ->addColumn('payment_status', function ($data) {
                  if((int) $data->services->service_amount < (int)($data->services->service_payment)->sum('amount')) {
-                    return "Partially Paid";
-                 }else {
                     return "Fully Paid";
+                 }else {
+                    return "Partial Paid";
                  }
-                
+
             })
             ->addColumn('status', function ($data) {
                     return $data->status;
