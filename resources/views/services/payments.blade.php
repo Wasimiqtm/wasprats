@@ -85,26 +85,28 @@
                                 </div>
                             </div>
 
-                            <div class="form-group">
+                            {{--<div class="form-group">
                                 <label class="form-label"  for="exampleFormControlSelect1">Payment Mode</label>
                                 <select class="form-select" id="paymentMode">
                                     <option value="full">Full</option>
                                     <option value="partial">Partial</option>
                                 </select>
 
-                            </div>
+                            </div>--}}
                             <div class="form-group ">
                                 <label class="form-label " for="FormControlSelect">Used Things</label>
-                            <div class="row d-flex justify-content-center mt-100">
-                                <div class="col-md-12"> <select id="choices-multiple-remove-button" placeholder="Select Used Things" multiple>
-                                        @foreach ($usedThings as $thing)
-                                           <option value="{{$thing->id}}">{{$thing->name}}</option>
-                                        @endforeach
-                                    </select> </div>
-                            </div> 
+                                <div class="row d-flex justify-content-center mt-100">
+                                    <div class="col-md-12"> <select id="choices-multiple-remove-button" placeholder="Select Used Things" multiple>
+                                            @foreach ($usedThings as $thing)
+                                               <option value="{{$thing->id}}">{{$thing->name}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
 
                             <div class="form-group">
-                                <label class="form-label">Amount Payable</label>
+                                <label class="form-label">Service Amount</label>
                                 <input type="text" class="form-control" readonly value="{{$job->services->service_amount}}">
                             </div>
 
@@ -203,7 +205,7 @@
                        $('#validation-errors').html('');
                        $.each(xhr.responseJSON.errors, function(key,value) {
                          $('#validation-errors').append('<div class="alert alert-danger">'+value+'</div');
-                     }); 
+                     });
                     },
                 });
             });
@@ -216,12 +218,12 @@
 <!-- Initialize Select2 -->
 <script>
        $(document).ready(function(){
-    
+
      var multipleCancelButton = new Choices('#choices-multiple-remove-button', {
         removeItemButton: true,
-      }); 
-     
-     
+      });
+
+
  });
 </script>
 

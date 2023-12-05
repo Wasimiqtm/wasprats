@@ -88,12 +88,13 @@ class PaymentsController extends Controller
     public function addServicePayment(ServicePaymentRequest $request)
     {
         $service =  Service::where('id', $request->service_id)->first();
+        $payment_mode = ($request->amount < $service->service_amount) ? 'partial':'full';
         $data = [
             'schedule_job_id' => $request->schedule_job_id,
             'service_id' => $service->id,
             'customer_id' => $request->customer_id,
             'user_id' => $request->user_id,
-            'payment_mode' => $request->payment_mode,
+            'payment_mode' => $payment_mode,
             'amount' => $request->amount,
             'used_things' => json_encode($request->used_things),
             'description' => $request->description
