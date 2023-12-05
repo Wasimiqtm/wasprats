@@ -132,7 +132,7 @@
     @push('scripts')
         <script type="text/javascript">
             $("document").ready(function() {
-                var datatable_url = route('service.payments.ajax', [{{ $job->services->id }}]) + '?tab={{ $tab }}';
+                var datatable_url = route('service.payments.ajax', [{{ $serviceId }}]) + '?tab={{ $tab }}';
                 var datatable_columns = [{
                         data: 'service.name'
                     },

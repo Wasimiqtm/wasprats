@@ -24,15 +24,18 @@ class PaymentsController extends Controller
      */
     public function index(Request $request, $serviceId)
     {
+        $serviceId = (int)$serviceId;
+//        dd($serviceId);
         $job = ScheduleJob::with(['services','customer', 'schedule.user'])->whereId($serviceId)->first();
+//        dd($job);
+        $services = ServicePayment::with('service', 'customer', 'user')->where(['schedule_job_id' => $serviceId, 'customer_id' => $job->customer_id])->latest()->get();
 
         $tab = 'all';
         if ($request->filled('tab') && in_array($request->tab, ['full', 'partial'])) {
             $tab = $request->tab;
         }
-        $services = ServicePayment::with('service', 'customer', 'user')->where('schedule_job_id', $serviceId)->latest()->get();
         if ($request->ajax()) {
-            $services = ServicePayment::with('service', 'customer', 'user')->where('service_id', $serviceId);
+            $services = ServicePayment::with('service', 'customer', 'user')->where(['schedule_job_id' => $serviceId, 'customer_id' => $job->customer_id]);
             switch ($tab) {
                 case 'full':
                     $services->where('payment_mode', 'full');
@@ -78,7 +81,7 @@ class PaymentsController extends Controller
         if((int) $usedServicePayment >= (int) $getServiceAmount ) {
             $checkAmount = 1 ;
         }
-        return view('services.payments', compact('service', 'customers', 'users', 'job', 'usedThings', 'checkAmount'), get_defined_vars());
+        return view('services.payments', compact('service', 'serviceId', 'customers', 'users', 'job', 'usedThings', 'checkAmount'), get_defined_vars());
     }
 
     /**

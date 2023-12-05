@@ -279,7 +279,7 @@ class JobController extends Controller
 
         return DataTables::of($schedule)
             ->addColumn('service_name', function ($data) {
-                return $data->services->name . '(loaction:- Home)';
+                return $data->services->name;
             })->addColumn('invoice_frequency', function ($data) {
                 return $data->invoice ? $data->invoice->frequency : 0;
             })
@@ -294,11 +294,14 @@ class JobController extends Controller
                     return $data->schedule->name;
                 }
             })->addColumn('total', function ($data) {
+                return $data->services->service_amount;
+
+        /*->addColumn('total', function ($data) {
                 if ($data->invoice) {
                     return $data->invoice->total;
                 } else {
                     return 0;
-                }
+                }*/
             })->addColumn('action', function ($customer) {
 
                 $action = '<td><div class="overlay-edit">';
