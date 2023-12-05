@@ -14,16 +14,29 @@
     <div class="pcoded-main-container">
         <div class="pcoded-content">
             <x-breadcrumb title="Customers Jobs Invoices"/>
-            <div class="dropdown bg-white">
-  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButtond" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    Select Customer
-  </button>
-  <div class="dropdown-menu" aria-labelledby="dropdownMenuButtond">
-    @foreach ($customers as $customer)
-    <button class="dropdown-item" onClick="clickCustomer({{$customer['id']}})">{{$customer['first_name']}} {{$customer['last_name']}}</button>
-    @endforeach
-  </div>
-</div>
+            <div class="dropdown bg-white" style="display: flex;">
+                <div>
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownTechnician" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Select Technician  
+                  </button>
+
+                  <div class="dropdown-menu" aria-labelledby="dropdownTechnician">
+                    @foreach ($getTechnicians as $user)
+                    <button class="dropdown-item" onClick="clickUser({{$user->id}})"> {{$user->name}}</button>
+                    @endforeach
+                  </div>
+                </div>
+                <div>
+                      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButtond" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Select Customer
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButtond">
+                    @foreach ($customers as $customer)
+                    <button class="dropdown-item" onClick="clickCustomer({{$customer['id']}})"> {{$customer['first_name']}} {{$customer['last_name']}}</button>
+                    @endforeach
+                  </div>
+                </div>
+            </div>
              <div class="row">
                 <div style="margin: 20px 0px;">
                     <input type="text" name="daterange" value="" />
@@ -89,7 +102,7 @@
                     endDate: endDate,
 
                 });
-                  var table = create_datatables(datatable_url, datatable_columns,'','',10,'','',[],{start_date:start,end_date:endDate, customer_id:null});
+                  var table = create_datatables(datatable_url, datatable_columns,'','',10,'','',[],{start_date:start,end_date:endDate, customer_id:null, user_tech_id:null});
                 $('input[name="daterange"]').on('apply.daterangepicker', function(ev, picker) {
                     var dataPOST = {start_date:picker.startDate,end_date:picker.endDate}
                     var   pageLength=10;
@@ -123,7 +136,6 @@
             $('#datatable tbody').on('click', 'td span.details-control', function () {
                 var tr = $(this).closest('tr');
                 var row = table.row( tr );
-                console.log('asad',row);
 
                 if ( row.child.isShown() ) {
                     row.child.hide();
@@ -149,9 +161,9 @@
                                     </thead>
                                     <tbody>`;
 
-                if(rowData.services.service_payment.length > 0){
-                    const payments = rowData.services.service_payment;
-
+                if(rowData.customer.service_payments.length > 0){
+                    const payments = rowData.customer.service_payments;
+                    console.log('payments',payments);
                     $.each(payments,function(index, payment){
                         paymentHtml += `<tr>
                             <td width="10%">${payment.amount}</td>
@@ -200,10 +212,10 @@
                 }
             ];
             var get_customer_id = null;
-            function clickCustomer(customer_id){
+            function clickCustomer(customer_id) {
              get_customer_id = customer_id
              {
-                    var dataPOST = {start_date:null,end_date:null, customer_id:get_customer_id}
+                    var dataPOST = {start_date:null,end_date:null,user_tech_id:null, customer_id:get_customer_id}
                     var   pageLength=10;
                     $('#datatable').DataTable().destroy();
                     var mytable = $('#datatable').DataTable({
@@ -231,6 +243,39 @@
                         }
                     });
 
+                }
+            }
+
+            function clickUser(user_tech_id) {
+             get_user_tech_id = user_tech_id
+             {
+                    var dataPOST = {start_date:null,end_date:null, customer_id:null,user_tech_id:get_user_tech_id}
+                    var   pageLength=10;
+                    $('#datatable').DataTable().destroy();
+                    var mytable = $('#datatable').DataTable({
+                        oLanguage: { sProcessing: '<img src="'+ Ziggy.url +'/images/bx_loader.gif">' },
+                        processing: true,
+                        serverSide: true,
+                        ordering: false,
+                        responsive: true,
+                        pageLength: pageLength,
+                        bLengthChange: (pageLength>0)?(pageLength==30?false:true):false,
+                        paging: (pageLength>0)?true:false,
+                        info: (pageLength>0)?(pageLength==30?false:true):false,
+                        "ajax": {
+                            "url": datatable_url,
+                            type:'POST',
+                            "data": function ( d ) {
+                                return $.extend( {}, d, {
+                                    "extra_search": JSON.stringify(dataPOST)
+                                } );
+                            }
+                        }, columns: datatable_columns,
+                        order: false,
+                        drawCallback: function ( settings ) {
+
+                        }
+                    });
                 }
             }
         </script>

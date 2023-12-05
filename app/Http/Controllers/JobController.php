@@ -6,6 +6,7 @@ use App\Models\Customer;
 use App\Models\Estimate;
 use App\Models\Invoice;
 use App\Models\Job;
+use App\Models\User;
 use App\Models\ScheduleJob;
 use App\Models\Service;
 use App\Models\CustomerLocation;
@@ -329,6 +330,7 @@ class JobController extends Controller
     public function customersJobsInvoices(Request $request)
     {
         $dateFilter = json_decode(request()->extra_search);
+        // dd($dateFilter);
         $tab = 'all';
         if (!empty($dateFilter->customer_id)) {
             $tab = 'customer';
@@ -336,14 +338,23 @@ class JobController extends Controller
         if(!empty($dateFilter->start_date)){
             $tab = 'date';
         }
+        if (!empty($dateFilter->user_tech_id)) {
+            $tab = 'technician';
+        }
         if ($request->ajax()) {
-             $schedule = ScheduleJob::with(['customer', 'invoice', 'services.service_payment', 'schedule.user']);
+             $schedule = ScheduleJob::with(['customer.service_payments', 'services.service_payment', 'schedule.user']);
              switch ($tab) {
                 case 'customer':
                     $schedule->where('customer_id', $dateFilter->customer_id);
                     break;
                 case 'date':
                     $schedule->whereDate('created_at', '>=', Carbon::parse($dateFilter->start_date)->format('Y-m-d'))->whereDate('created_at', '<=', Carbon::parse($dateFilter->end_date)->format('Y-m-d'));
+                    break;
+                case 'technician':
+                $value = $dateFilter->user_tech_id;
+                 $schedule->whereHas('schedule',function($q) use($value) {
+                    $q->where('user_id',$value);
+                });
                     break;
                 default:
                     $schedule;
@@ -361,7 +372,7 @@ class JobController extends Controller
                 }
             })
             ->addColumn('payment_status', function ($data) {
-                 if((int) $data->services->service_amount < (int)($data->services->service_payment)->sum('amount')) {
+                 if((int) $data->services->service_amount < (int)($data->customer->service_payments)->sum('amount')) {
                     return "Fully Paid";
                  }else {
                     return "Partial Paid";
@@ -377,23 +388,13 @@ class JobController extends Controller
              ->addColumn('created_at', function ($data) {
                     return $data->created_at;
             })
-            // ->addColumn('action', function ($customer) {
-
-            //     $action = '<td><div class="overlay-edit">';
-
-
-            //     $action .= '<a href="javascript:void(0)" class="btn btn-icon btn-secondary editRecord" data-id="' . $customer->id . '" data-status="' . $customer->status . '" title="Jobs"><i class="feather icon-edit"></i></a>';
-
-
-            //     $action .= '</div></td>';
-
-            //     return $action;
-            // })
             ->editColumn('id', 'ID: {{$id}}')
             ->rawColumns(['action', 'payments'])
             ->make(true);
             }
             $customers = Customer::orderBy('created_at','desc')->get(['id','first_name','last_name']);
-        return view('customers.customers-jobs-invoices',compact('customers'));
+            $getTechnicians = User::whereHas('roles', function($role) {$role->where('name','Technician');
+                    })->get();
+        return view('customers.customers-jobs-invoices',compact('customers','getTechnicians'));
     }
 }
