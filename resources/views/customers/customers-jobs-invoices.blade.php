@@ -16,7 +16,7 @@
             <x-breadcrumb title="Customers Jobs Invoices"/>
             <div class="dropdown bg-white">
   <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButtond" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    Select Customer 
+    Select Customer
   </button>
   <div class="dropdown-menu" aria-labelledby="dropdownMenuButtond">
     @foreach ($customers as $customer)
@@ -32,11 +32,12 @@
                 <div class="card user-profile-list">
                     <div class="card-body-dd theme-tbl">
                         <x-table action="false" checkbox="false" :keys="[
-                                'Payments',
+                                '',
                                 'Service Name',
                                 'Customer Name',
                                 'Technician Name',
-                                'Payment Status',
+                                'Amount',
+                                'Payment',
                                 'Status',
                                 'Created At'
                             ]"/>
@@ -67,6 +68,9 @@
                 },
                 {
                     data: 'technician_name'
+                },
+                {
+                    data: 'services.service_amount'
                 },
                 {
                     data: 'payment_status'
@@ -124,15 +128,15 @@
                 if ( row.child.isShown() ) {
                     row.child.hide();
                     tr.removeClass('shown');
-                } else {                
+                } else {
                     row.child( format(row.data()) ).show();
                     tr.addClass('shown');
                 }
             });
-            
+
             function format ( rowData ) {
                 let div = $('<div/>').addClass( 'loading' ).text( 'Loading...' );
-        
+
                 let paymentHtml = `<h4>Payments</h4><table class="table table-bordered table-striped">
                                     <thead>
                                         <tr>
@@ -144,10 +148,10 @@
                                         </tr>
                                     </thead>
                                     <tbody>`;
-                                        
+
                 if(rowData.services.service_payment.length > 0){
                     const payments = rowData.services.service_payment;
-      
+
                     $.each(payments,function(index, payment){
                         paymentHtml += `<tr>
                             <td width="10%">${payment.amount}</td>
@@ -160,13 +164,13 @@
                 } else {
                     paymentHtml += '<tr><td colspan="4">Record not found</td></tr> ';
                 }
-                
+
                 paymentHtml += '</tbody></table>';
-                
+
                 div.html( paymentHtml ).removeClass( 'loading' );
-         
+
                 return div;
-            }     
+            }
         });
         </script>
         <script type="text/javascript">
@@ -181,6 +185,9 @@
                 },
                 {
                     data: 'technician_name'
+                },
+                {
+                    data: 'services.service_amount'
                 },
                 {
                     data: 'payment_status'

@@ -371,6 +371,9 @@ class JobController extends Controller
             ->addColumn('status', function ($data) {
                     return $data->status;
             })
+            ->addColumn('amount', function ($data) {
+                return $data->services->service_amount;
+            })
              ->addColumn('created_at', function ($data) {
                     return $data->created_at;
             })
