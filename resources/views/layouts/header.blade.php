@@ -1,8 +1,8 @@
 <?php $auth = Auth::user();?>
     <!-- [ Header ] start -->
 	<header class="navbar pcoded-header navbar-expand-lg navbar-light headerpos-fixed header-blue">
-		
-			
+
+
         <div class="m-header">
             <a class="mobile-menu" id="mobile-collapse" href="#"><span></span></a>
             <a href="#" class="b-brand">
@@ -30,7 +30,7 @@
             </ul>
             <ul class="navbar-nav ms-auto">
                 <li>
-                    <div class="dropdown">
+                    {{--<div class="dropdown">
                         <a class="dropdown-toggle" href="#" data-bs-toggle="dropdown"><i class="icon feather icon-bell"></i><span class="badge bg-danger"><span class="sr-only"></span></span></a>
                         <div class="dropdown-menu dropdown-menu-end notification">
                             <div class="noti-head">
@@ -88,16 +88,16 @@
                                 <a href="#">show all</a>
                             </div>
                         </div>
-                    </div>
+                    </div>--}}
                 </li>
                 <li>
                     <div class="dropdown drp-user">
                         <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown">
-                            <img src="{{ asset('images') }}/user/avatar-1.jpg" class="img-radius wid-40" alt="User-Profile-Image">
+                            <img src="{{ asset('images') }}/user/avatar.png" class="img-radius wid-40" alt="User-Profile-Image">
                         </a>
                         <div class="dropdown-menu dropdown-menu-end profile-notification">
                             <div class="pro-head">
-                                <img src="{{ asset('images') }}/user/avatar-1.jpg" class="img-radius" alt="User-Profile-Image">
+                                <img src="{{ asset('images') }}/user/avatar.png" class="img-radius" alt="User-Profile-Image">
                                 <span>{{$auth->name}}</span>
                                 <a href="{{ route('logout') }}" class="dud-logout" title="Logout">
                                     <i class="feather icon-log-out"></i>
@@ -113,7 +113,7 @@
                 </li>
             </ul>
         </div>
-        
-    
+
+
 </header>
 <!-- [ Header ] end -->
