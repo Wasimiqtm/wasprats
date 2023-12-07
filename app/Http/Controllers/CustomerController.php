@@ -170,9 +170,10 @@ class CustomerController extends Controller
 
         $taxes = Tax::get();
         $customerLocation = CustomerLocation::where('customer_id',$customer->id )->orderBy('id','desc')->get();
-        $schedules = Schedule::with('user')->get();
-
-        return view('customers.details',compact('id','customerNotes','users','customerTask','items','taxes','services','customer','schedules','customerLocation'));
+        // $schedules = Schedule::with('user')->get();
+        $getTechnicians = User::whereHas('roles', function($role) {$role->where('name','Technician');
+                    })->get();
+        return view('customers.details',compact('id','customerNotes','users','customerTask','items','taxes','services','customer','getTechnicians','customerLocation'));
     }
 
     public function addCustomerNotes()

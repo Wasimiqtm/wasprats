@@ -180,44 +180,61 @@ class JobController extends Controller
      */
     function updateJob(Request $request)
     {
-
-        $from = explode('T', $request->from);
-        $requestData['from_date'] = $from[0];
-        if (isset($from[1])) {
-            $fromTime = explode('+', $from[1]);
-            $requestData['from_time'] = $fromTime[0];
-        } else {
-            $requestData['from_time'] = '00:00:00';
-        }
-        if(isset($request->to)) {
-            $to = explode('T', $request->to);
-            $requestData['to_date'] = $to[0];
-            if (isset($to[1])) {
-                $toTime = explode('+', $to[1]);
-                $requestData['to_time'] = $toTime[0];
-            } else {
-                $requestData['to_time'] = '23:59:59';
+            $scheduleJob = ScheduleJob::where('id',$request->id)->first();
+            if(isset($scheduleJob)) {
+                $getData = $request->from;
+                $formattedDate = Carbon::parse($getData)->format('Y-m-d');
+                $formattedTime = Carbon::parse($getData)->format('H:i');
+                $scheduleJob->date = $formattedDate;
+                $scheduleJob->time = $formattedTime;
+                $scheduleJob->save();
             }
-        }
+        // $from = explode('T', $request->from);
+        // $requestData['from_date'] = $from[0];
+        // if (isset($from[1])) {
+        //     $fromTime = explode('+', $from[1]);
+        //     $requestData['from_time'] = $fromTime[0];
+        // } else {
+        //     $requestData['from_time'] = '00:00:00';
+        // }
+        // if(isset($request->to)) {
+        //     $to = explode('T', $request->to);
+        //     $requestData['to_date'] = $to[0];
+        //     if (isset($to[1])) {
+        //         $toTime = explode('+', $to[1]);
+        //         $requestData['to_time'] = $toTime[0];
+        //     } else {
+        //         $requestData['to_time'] = '23:59:59';
+        //     }
+        // }
 
-        $job = Job::find($request->id);
-        if ($job) {
-            $job->update($requestData);
-        }
+        // $job = Job::find($request->id);
+        // if ($job) {
+        //     $job->update($requestData);
+        // }
 
         return $this->sendResponse(true, 'Job successfully updated');
     }
 
     public function assignJob()
     {
+        $formattedDate = null;
+        $formattedTime = null;
+        $customerLocation = null;
+        if(isset(\request()->from)) {
+            $getData = \request()->from;
+            $formattedDate = Carbon::parse($getData)->format('Y-m-d');
+            $formattedTime = Carbon::parse($getData)->format('H:i');
+            $customerLocation = CustomerLocation::where('customer_id',\request()->customer_id)->first();
+        }
         //dd(config('mail.mailers.smtp'));
         $customer = Customer::where('uuid', \request()->customer_id)->first();
         $data = ScheduleJob::create([
-            'location_id' => \request()->location,
+            'location_id' => isset($customerLocation) ? $customerLocation['id'] : \request()->location,
             'customer_id' => $customer->id,
             'service_id' => \request()->customer_job_service,
-            'date' => \request()->JobEvent['date'],
-            'time' => \request()->JobEvent['time'],
+            'date' => isset($formattedDate) ? $formattedDate : \request()->JobEvent['date'],
+            'time' => isset($formattedTime) ? $formattedTime :\request()->JobEvent['time'],
             'hours' => \request()->JobEvent['hours'],
             'minutes' => \request()->JobEvent['minutes'],
             'recurance' => json_encode(request()->JobEvent['recurrence']),
@@ -236,7 +253,10 @@ class JobController extends Controller
             'frequency' => \request()->repeat_frequency
         ]);
         // Send email
-        $customerLocation = CustomerLocation::where('id',\request()->location)->first();
+        $customerLocation = null;
+        if(isset(\request()->location)) {
+            $customerLocation = CustomerLocation::where('id',\request()->location)->first();
+        }
         $userMail = (isset($data->schedule) && isset($data->schedule->user)) ? $data->schedule->user->email : null;
         $customerMail = isset($customer) ? $customer->email : null;
         $usersEmail = [$userMail,$customerMail];
@@ -253,7 +273,7 @@ class JobController extends Controller
             'notes' => $data->notes,
             'customer' => $customer->first_name. ' ' .$customer->last_name,
             'service' => $service->name,
-            'customer_location' => $customerLocation->name,
+            'customer_location' => isset($customerLocation) ? $customerLocation->name : null,
             'total' => $service->invoice_total,
             'user' => (isset($data->schedule) && isset($data->schedule->user)) ? $data->schedule->user->name : null
         ];
