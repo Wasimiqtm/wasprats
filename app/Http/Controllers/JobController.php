@@ -263,18 +263,66 @@ class JobController extends Controller
             $detail["email"] = $emailData;
             $detail["title"] = "Job Confirmation";
             $detail["body"] = "An invoice is a document that charges a customer for goods or services you've provided. Also called a bill, an invoice shows all the information about a transaction. This includes: the quantity of any goods or services provided. the rate charged.";
-
-            Mail::send('customers.send-job-email', $detail, function($message)use($detail, $pdf) {
-                $message->to($detail["email"], $detail["email"])
-                        ->subject($detail["title"])
-                        ->attachData($pdf->output(), 'job-confirmation-invoice.pdf');
-            });
+            
+        $message = '
+            <!DOCTYPE html>
+             <html lang="en-EN">
+              <head>
+                <meta charset="utf-8">
+              </head>
+              <body bgcolor="#11C9FF">
+                <p>'. $detail["body"] .'</p>
+            	<div align="left">
+               		<h3>Kindly see the attachment.</h3>
+               </div>
+              </body>
+            </html>';
+        
+        
+        $headers =  'MIME-Version: 1.0' . "\r\n";
+        $headers .= 'From: Waspsrats <info@waspsrats.com>' . "\r\n";
+        $headers .= "Content-Type: multipart/mixed; boundary=\"boundary\"\r\n";
+        
+        // Create the email body
+        $body = "--boundary\r\n";
+        $body .= "Content-Type: text/html; charset=\"utf-8\"\r\n";
+        $body .= $message . "\r\n\r\n";
+        
+        $attachment_path = "Job Confirmation.pdf"; // Replace with the actual path to your PDF file
+        $file_encoded = base64_encode($pdf->output());
+        
+        $body .= "--boundary\r\n";
+        $body .= "Content-Type: application/pdf; name=\"" . basename($attachment_path) . "\"\r\n";
+        $body .= "Content-Transfer-Encoding: base64\r\n";
+        $body .= "Content-Disposition: attachment\r\n\r\n";
+        $body .= chunk_split($file_encoded) . "\r\n";
+        $body .= "--boundary--";
+        
+        mail($detail["email"], $detail["title"], $body, $headers);
+        
+            // Mail::send('customers.send-job-email', $detail, function($message)use($detail, $pdf) {
+            //     $message->to($detail["email"], $detail["email"])
+            //             ->subject($detail["title"])
+            //             ->attachData($pdf->output(), 'job-confirmation-invoice.pdf');
+            // });
         }
           return $this->sendResponse(true, 'Job created successfully');
     }
 
     public function customerJobDetails()
     {
+       
+        // $headers =  'MIME-Version: 1.0' . "\r\n";
+        // $headers .= 'From: Waspsrats <info@waspsrats.com>' . "\r\n";
+        // $headers .= 'Content-type: text/html; charset=UTF-8' . "\r\n";
+        // if(mail('abdulmanan4d@gmail.com', 'subject', 'wasprats', $headers)) {
+        // echo 'yes';
+        // } else {
+        // echo 'no';
+        // }
+        
+         //dd('hello1');
+        
         $customer = Customer::where('uuid', \request()->customer_id)->first();
         $schedule = ScheduleJob::with(['customer', 'invoice', 'services', 'schedule.user'])->where('customer_id', $customer->id)->get();
 
