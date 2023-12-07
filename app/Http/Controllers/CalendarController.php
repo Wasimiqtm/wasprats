@@ -23,7 +23,7 @@ class CalendarController extends Controller
      */
     public function index(Request $request)
     {
-        $customers = Customer::all()->pluck('name', 'id');
+        $customers = Customer::all()->pluck('name','uuid');
         $services = Service::pluck('name', 'id');
         $jobs = ScheduleJob::where('status',"active")->with('services', 'customer')->get();
 
@@ -32,8 +32,9 @@ class CalendarController extends Controller
             $events[] = getEventObject($job);
         }
         $events = json_encode($events);
-
-        return view('calendars.index', get_defined_vars());
+        $services = Service::all();
+        return view('calendars.index', compact('services','customers'),get_defined_vars());
+        // return view('customers.details',compact('id','customerNotes','users','customerTask','items','taxes','services','customer','schedules','customerLocation'));
     }
 
     /**

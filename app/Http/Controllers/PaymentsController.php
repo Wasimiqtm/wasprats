@@ -7,6 +7,7 @@ use App\Models\ScheduleJob;
 use App\Models\Service;
 use App\Models\User;
 use App\Models\ServicePayment;
+use App\Models\Tax;
 use App\Models\UsedItem;
 use Illuminate\Http\Request;
 use App\Http\Requests\ServicePaymentRequest;
@@ -187,6 +188,7 @@ class PaymentsController extends Controller
 
     public function singlePaymentInvoice($servicePaymentId)
     {
+       
         $currentTime = Carbon::now();
         $fileName =  $currentTime->toDateTimeString();
         $servicePayment = ServicePayment::where('id', $servicePaymentId)->with('service', 'customer', 'user')->first();
@@ -195,8 +197,10 @@ class PaymentsController extends Controller
         if($usedThings) {
            $usedItems =  UsedItem::whereIn('id', $usedThings)->get()->pluck('name');
         }
+        $tax =  Tax::where('is_active',1)->first();
+        $applyTax = isset($tax) ? (int) $tax->rate : 0;
         $servicePayment->usedItems = $usedItems;
-        $netAmount = ($servicePayment->service->service_amount * 20)/100;
+        $netAmount = ($servicePayment->service->service_amount * $applyTax)/100;
         $servicePayment->staticVat = $netAmount;
         $servicePayment->newAmount = $servicePayment->service->service_amount + $netAmount;
         $servicePayment->remainingAmount = $servicePayment->service->service_amount - $servicePayment->amount;

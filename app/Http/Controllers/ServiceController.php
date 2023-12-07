@@ -9,6 +9,7 @@ use App\Http\Requests\RoleRequest;
 use App\Http\Requests\ServiceRequest;
 use App\Models\Item;
 use App\Models\Service;
+use App\Models\User;
 use App\Models\ServiceEstimateItem;
 use App\Models\ServiceInvoiceItem;
 use App\Models\Tax;
@@ -367,7 +368,9 @@ class ServiceController extends Controller
     public function getServiceInfo()
     {
         $services = Service::where('id',request()->id)->first();
-        $schedules = Schedule::with('user')->get();
-        return view('customers.customer_details.services-details',compact('services','schedules'));
+        // $schedules = Schedule::with('user')->get();
+        $getTechnicians = User::whereHas('roles', function($role) {$role->where('name','Technician');
+                    })->get();
+        return view('customers.customer_details.services-details',compact('services','getTechnicians'));
     }
 }
