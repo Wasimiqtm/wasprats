@@ -368,9 +368,9 @@ class ServiceController extends Controller
     public function getServiceInfo()
     {
         $services = Service::where('id',request()->id)->first();
-        // $schedules = Schedule::with('user')->get();
-        $getTechnicians = User::whereHas('roles', function($role) {$role->where('name','Technician');
-                    })->get();
-        return view('customers.customer_details.services-details',compact('services','getTechnicians'));
+        $schedules = Schedule::with('user')->get();
+        // $getTechnicians = User::whereHas('roles', function($role) {$role->where('name','Technician');
+                    // })->get();
+        return view('customers.customer_details.services-details',compact('services','schedules'));
     }
 }

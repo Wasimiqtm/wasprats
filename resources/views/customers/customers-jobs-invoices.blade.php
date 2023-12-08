@@ -15,27 +15,24 @@
         <div class="pcoded-content">
             <x-breadcrumb title="Customers Jobs Invoices"/>
             <div class="dropdown bg-white" style="display: flex;">
-                <div>
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownTechnician" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Select Technician  
-                  </button>
-
-                  <div class="dropdown-menu" aria-labelledby="dropdownTechnician">
-                    @foreach ($getTechnicians as $user)
-                    <button class="dropdown-item" onClick="clickUser({{$user->id}})"> {{$user->name}}</button>
-                    @endforeach
-                  </div>
-                </div>
-                <div>
-                      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButtond" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Select Customer
-                  </button>
-                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButtond">
-                    @foreach ($customers as $customer)
-                    <button class="dropdown-item" onClick="clickCustomer({{$customer['id']}})"> {{$customer['first_name']}} {{$customer['last_name']}}</button>
-                    @endforeach
-                  </div>
-                </div>
+                <div class="mb-3">
+                    <label for="select-technician" class="form-label">Select Technician</label>
+                    <select id="technicianID" class="form-select"  onchange="clickUserTechnician()" >
+                        <option value="null">Select Any Technician</option>
+                        @foreach ($getTechnicians as $user)
+                         <option value="{{$user->id}}">{{$user->name}}</option>
+                        @endforeach
+                    </select>
+                </div> 
+                <div class="mb-3">
+                    <label for="select-technician" class="form-label">Select Customer</label>
+                    <select id="customerId" class="form-select" onchange="clickUserCustomer()">
+                        <option value="null">Select Any Customer</option>
+                        @foreach ($customers as $customer)
+                         <option value="{{$customer['id']}}">{{$customer['first_name']}} {{$customer['last_name']}}</option>
+                        @endforeach
+                    </select>
+                </div> 
             </div>
              <div class="row">
                 <div style="margin: 20px 0px;">
@@ -68,6 +65,7 @@
         <script src="{{asset('js/plugins/highchart.min.js')}}"></script>
         <script src="{{asset('js/plugins/daterange-picker.js')}}"></script>
         <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+        
         <script type="text/javascript">
             $("document").ready(function () {
             var datatable_url = route('customers.jobs.invoices.ajax');
@@ -97,14 +95,17 @@
             ];
             var start = moment().subtract(29, 'days');
             var endDate = moment();
+            var techId = $("#technicianID option:selected" ).val(); 
+            var customerId = $("#customerId option:selected" ).val(); 
                 $('input[name="daterange"]').daterangepicker({
                     startDate: start,
                     endDate: endDate,
 
                 });
-                  var table = create_datatables(datatable_url, datatable_columns,'','',10,'','',[],{start_date:start,end_date:endDate, customer_id:null, user_tech_id:null});
+                  var table = create_datatables(datatable_url, datatable_columns,'','',10,'','',[],{start_date:start,end_date:endDate, customer_id:customerId, user_tech_id:techId});
+
                 $('input[name="daterange"]').on('apply.daterangepicker', function(ev, picker) {
-                    var dataPOST = {start_date:picker.startDate,end_date:picker.endDate}
+                    var dataPOST = {start_date:picker.startDate,end_date:picker.endDate,user_tech_id:techId, customer_id:customerId}
                     var   pageLength=10;
                     $('#datatable').DataTable().destroy();
                     var mytable = $('#datatable').DataTable({
@@ -185,6 +186,10 @@
             }
         });
         </script>
+
+
+
+
         <script type="text/javascript">
             var datatable_url = route('customers.jobs.invoices.ajax');
             var datatable_columns = [{
@@ -212,10 +217,17 @@
                 }
             ];
             var get_customer_id = null;
-            function clickCustomer(customer_id) {
-             get_customer_id = customer_id
-             {
-                    var dataPOST = {start_date:null,end_date:null,user_tech_id:null, customer_id:get_customer_id}
+
+            function clickUserCustomer() {
+                var selectElement = document.getElementById("customerId");
+                var selectedOption = selectElement.options[selectElement.selectedIndex];
+                var selectedCustomerValue = selectedOption.value;
+             get_customer_id = selectedCustomerValue
+
+            var techId = $("#technicianID option:selected" ).val(); 
+            [startDate, endDate] = $('input[name="daterange"]').val().split(' - ');
+
+                    var dataPOST = {start_date:startDate,end_date:endDate,user_tech_id:techId, customer_id:get_customer_id}
                     var   pageLength=10;
                     $('#datatable').DataTable().destroy();
                     var mytable = $('#datatable').DataTable({
@@ -242,14 +254,16 @@
 
                         }
                     });
-
-                }
             }
-
-            function clickUser(user_tech_id) {
-             get_user_tech_id = user_tech_id
-             {
-                    var dataPOST = {start_date:null,end_date:null, customer_id:null,user_tech_id:get_user_tech_id}
+   
+     function clickUserTechnician() {
+        var selectElement = document.getElementById("technicianID");
+        var selectedOption = selectElement.options[selectElement.selectedIndex];
+        var selectedTechnicianValue = selectedOption.value;
+           var  get_user_tech_id = selectedTechnicianValue
+           var customerId = $("#customerId option:selected" ).val(); 
+            [startDate, endDate] = $('input[name="daterange"]').val().split(' - ');
+                    var dataPOST = {start_date:startDate,end_date:endDate, customer_id:customerId,user_tech_id:get_user_tech_id}
                     var   pageLength=10;
                     $('#datatable').DataTable().destroy();
                     var mytable = $('#datatable').DataTable({
@@ -276,7 +290,6 @@
 
                         }
                     });
-                }
             }
         </script>
     @endpush

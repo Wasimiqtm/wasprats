@@ -55,8 +55,8 @@
     <div class="form-group row" style="display: block;">
         <label for="JobEvent_hours" class="job-length-label">Assign To</label>
         <select class="form-select" name="JobEvent[primary_schedule_id]" id="assign_to">
-            @foreach($getTechnicians as $value)
-                <option value="{{$value->id}}">{{$value->name}}</option>
+            @foreach($schedules as $value)
+                <option value="{{$value->id}}">{{($value->user)?$value->user->name:$value->name}}</option>
             @endforeach
 
 

@@ -402,35 +402,53 @@ class JobController extends Controller
     {
         $dateFilter = json_decode(request()->extra_search);
         // dd($dateFilter);
-        $tab = 'all';
-        if (!empty($dateFilter->customer_id)) {
-            $tab = 'customer';
-        }
-        if(!empty($dateFilter->start_date)){
-            $tab = 'date';
-        }
-        if (!empty($dateFilter->user_tech_id)) {
-            $tab = 'technician';
-        }
+        // $tab = 'all';
+        // if (!empty($dateFilter->customer_id)) {
+        //     $tab = 'customer';
+        // }
+        // if(!empty($dateFilter->start_date)){
+        //     $tab = 'date';
+        // }
+        // if (!empty($dateFilter->user_tech_id)) {
+        //     $tab = 'technician';
+        // }
+
         if ($request->ajax()) {
-             $schedule = ScheduleJob::with(['customer.service_payments', 'services.service_payment', 'schedule.user']);
-             switch ($tab) {
-                case 'customer':
-                    $schedule->where('customer_id', $dateFilter->customer_id);
-                    break;
-                case 'date':
-                    $schedule->whereDate('created_at', '>=', Carbon::parse($dateFilter->start_date)->format('Y-m-d'))->whereDate('created_at', '<=', Carbon::parse($dateFilter->end_date)->format('Y-m-d'));
-                    break;
-                case 'technician':
-                $value = $dateFilter->user_tech_id;
-                 $schedule->whereHas('schedule',function($q) use($value) {
-                    $q->where('user_id',$value);
-                });
-                    break;
-                default:
-                    $schedule;
-                    break;
-            }
+            $startDate = $dateFilter->start_date;
+            $endDate = $dateFilter->end_date;
+            $customerId = $dateFilter->customer_id;
+            $userTechId = $dateFilter->user_tech_id;
+             $schedule = ScheduleJob::with(['customer.service_payments', 'services.service_payment', 'schedule.user'])
+                                        
+                                        ->when(!empty($dateFilter->customer_id) && $dateFilter->customer_id != "null", function ($q) use($customerId) {
+                                            return $q->where('customer_id', $customerId);
+                                        })
+                                        ->when(!empty($dateFilter->start_date), function ($q) use($startDate, $endDate) {
+                                            return $q->whereDate('created_at', '>=', Carbon::parse($startDate)->format('Y-m-d'))->whereDate('created_at', '<=', Carbon::parse($endDate)->format('Y-m-d'));
+                                        })
+                                        ->when(!empty($dateFilter->user_tech_id) && $dateFilter->user_tech_id != "null", function ($q) use($userTechId) {
+                                            return $q->whereHas('schedule',function($q) use($userTechId) {
+                                                $q->where('user_id',$userTechId);
+                                            });
+                                        });
+            //  $schedule = ScheduleJob::with(['customer.service_payments', 'services.service_payment', 'schedule.user']);
+            //  switch ($tab) {
+            //     case 'customer':
+            //         $schedule->where('customer_id', $dateFilter->customer_id);
+            //         break;
+            //     case 'date':
+            //         $schedule->whereDate('created_at', '>=', Carbon::parse($dateFilter->start_date)->format('Y-m-d'))->whereDate('created_at', '<=', Carbon::parse($dateFilter->end_date)->format('Y-m-d'));
+            //         break;
+            //     case 'technician':
+            //     $value = $dateFilter->user_tech_id;
+            //      $schedule->whereHas('schedule',function($q) use($value) {
+            //         $q->where('user_id',$value);
+            //     });
+            //         break;
+            //     default:
+            //         $schedule;
+            //         break;
+            // }
         return DataTables::of($schedule)
                 ->addColumn('payments', function ($product) {
                     return '<span class="details-control"></span>';
@@ -462,7 +480,7 @@ class JobController extends Controller
             ->editColumn('id', 'ID: {{$id}}')
             ->rawColumns(['action', 'payments'])
             ->make(true);
-            }
+        }
             $customers = Customer::orderBy('created_at','desc')->get(['id','first_name','last_name']);
             $getTechnicians = User::whereHas('roles', function($role) {$role->where('name','Technician');
                     })->get();
