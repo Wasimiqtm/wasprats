@@ -254,7 +254,7 @@ class JobController extends Controller
             'frequency' => \request()->repeat_frequency
         ]);
         // Send email
-        /*$customerLocation = null;
+        $customerLocation = null;
         if(isset(\request()->location)) {
             $customerLocation = CustomerLocation::where('id',\request()->location)->first();
         }
@@ -326,7 +326,7 @@ class JobController extends Controller
             //             ->subject($detail["title"])
             //             ->attachData($pdf->output(), 'job-confirmation-invoice.pdf');
             // });
-        }*/
+        }
           return $this->sendResponse(true, 'Job created successfully');
     }
 
