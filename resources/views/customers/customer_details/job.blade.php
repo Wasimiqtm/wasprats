@@ -9,8 +9,10 @@
                         <x-table action="false" checkbox="false" :keys="[
                                 'Service Name',
                                 'Job Frequency',
-                                'Invoice Frequency',
+                                {{--'Invoice Frequency',--}}
                                 'Assigned To',
+                                'Amount',
+                                'Tax',
                                 'Total',
                                 'Action'
                             ]"/>
@@ -134,14 +136,20 @@
                 {
                     data: 'job_frequency'
                 },
-                {
+                /*{
                     data: 'invoice_frequency'
-                },
+                },*/
                 {
                     data: 'assigned_to'
                 },
                 {
                     data: 'total'
+                },
+                {
+                    data: 'tax'
+                },
+                {
+                    data: 'total_amount'
                 },
                 {
                     data: 'action'

@@ -6,6 +6,7 @@ use App\Models\Customer;
 use App\Models\Estimate;
 use App\Models\Invoice;
 use App\Models\Job;
+use App\Models\Tax;
 use App\Models\User;
 use App\Models\ScheduleJob;
 use App\Models\Service;
@@ -345,6 +346,8 @@ class JobController extends Controller
 
         $customer = Customer::where('uuid', \request()->customer_id)->first();
         $schedule = ScheduleJob::with(['customer', 'invoice', 'services', 'schedule.user'])->where('customer_id', $customer->id)->get();
+        $taxes = Tax::get();
+        $tax_rate = $taxes[0]->rate;
 
         return DataTables::of($schedule)
             ->addColumn('service_name', function ($data) {
@@ -371,7 +374,13 @@ class JobController extends Controller
                 } else {
                     return 0;
                 }*/
-            })->addColumn('action', function ($customer) {
+            })->addColumn('tax', function ($data) use ($tax_rate) {
+                return $tax_rate;
+            })
+            ->addColumn('total_amount', function ($data) use ($tax_rate) {
+                return $data->services->service_amount + $tax_rate;
+            })
+            ->addColumn('action', function ($customer) {
 
                 $action = '<td><div class="overlay-edit">';
 

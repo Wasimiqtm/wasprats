@@ -1,6 +1,5 @@
 <div class="main-container">
     <div class="pcoded-content">
-        <a class="btn btn-primary" id="addinvoice">New Job</a>
         <a class="btn btn-primary" href="{{ route('job.invoice', request()->id)}}">Print Invoice</a><br /><br />
         <div class="row">
             <div class="col-xl-12 col-md-12">
