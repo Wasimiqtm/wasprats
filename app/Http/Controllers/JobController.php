@@ -221,17 +221,15 @@ class JobController extends Controller
     {
         $formattedDate = null;
         $formattedTime = null;
-        $customerLocation = null;
         if(isset(\request()->from)) {
             $getData = \request()->from;
             $formattedDate = Carbon::parse($getData)->format('Y-m-d');
             $formattedTime = Carbon::parse($getData)->format('H:i');
-            $customerLocation = CustomerLocation::where('customer_id',\request()->customer_id)->first();
         }
         //dd(config('mail.mailers.smtp'));
         $customer = Customer::where('uuid', \request()->customer_id)->first();
         $data = ScheduleJob::create([
-            'location_id' => isset($customerLocation) ? $customerLocation['id'] : \request()->location,
+            'location_id' => isset(\request()->location) ? \request()->location : null,
             'customer_id' => $customer->id,
             'service_id' => \request()->customer_job_service,
             'date' => isset($formattedDate) ? $formattedDate : \request()->JobEvent['date'],

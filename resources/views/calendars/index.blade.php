@@ -38,12 +38,22 @@
                     <div class="tab-pane active" id="job-details">
                             <input type="hidden" name="from" id="job_from" />
                         <div class="form-group row">
-                            {!! Form::label('customer_id', 'Customer', ['class' => 'form-label required-input']) !!}
+                             {!! Form::label('customer_id', 'Customer', ['class' => 'form-label required-input']) !!}
+                            <select class=""   name="customer_id" id="customer_id">
+                                        <option>Select Customer</option>
+                                        @foreach($customers as $customer)
+                                            <option value="{{$customer->uuid}}">{{$customer->first_name}}
+                                                {{$customer->last_name}}</option>
+                                        @endforeach
+                            </select>
+                           {{--  {!! Form::label('customer_id', 'Customer', ['class' => 'form-label required-input']) !!}
                             {!! Form::select('customer_id', $customers, null, [
                                 'id' => 'customer_id',
                                 'class' => 'form-control ' . $errors->first('customer_id', 'error'),
                             ]) !!}
-                            {!! $errors->first('customer_id', '<label class="error">:message</label>') !!}
+                            {!! $errors->first('customer_id', '<label class="error">:message</label>') !!} --}}
+                        </div>
+                        <div id="locationContainer" class="form-group row">
                         </div>
                        {{--  <div class="form-group row">
                             <label class="col-form-label col-lg-3 col-sm-12 text-lg-end">Address</label>
@@ -348,7 +358,32 @@ $("body").on('click', "#addinvoice", function () {
 
                 }
             })
-        })
+        });
+       $("body").on('change','#customer_id',function() {
+            var id = $(this).val();
+            $.ajax({
+                url: '{{route('get.custmer.locations')}}',
+                type: 'GET',
+                "headers": {'X-CSRF-TOKEN': "{{csrf_token()}}"},
+                data:{id:id},
+                success: function (data) {
+                    console.log('data',data)
+                   displayLocations(data);
+                }
+            })
+        });
+       function displayLocations(locations) {
+         if (locations && locations.length > 0) {
+              var html = '<label class="form-label ">Address:</label><select id="locationSelect"  name="location">';
+                $.each(locations, function(index, location) {
+                    html += '<option value="' + location.id + '">' + location.name + '</option>';
+                });
+                html += '</select>';
+                $('#locationContainer').html(html);
+        } else {
+        $('#locationContainer').html('<p>No locations available.</p>');
+    }
+        }
         </script>
     @endpush
 
