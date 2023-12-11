@@ -96,4 +96,8 @@ class Customer extends Model
     {
         return $this->hasMany(ServicePayment::class,'customer_id', 'id');
     }
+    public function customer_locations()
+    {
+        return $this->hasMany(CustomerLocation::class,'customer_id', 'id');
+    }
 }

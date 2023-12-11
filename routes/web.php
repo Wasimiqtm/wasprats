@@ -56,6 +56,8 @@ Route::get('/dashboard', function () {
 Route::middleware(['auth'])->group(function () {
 
     Route::get('calendar', [CalendarController::class, 'index'])->name('calendar.index');
+    Route::get('get-custmer-locations',[CalendarController::class, 'getCustmerlocations'])->name('get.custmer.locations');
+
 
     Route::resource('jobs', JobController::class);
     Route::post('update-job', [JobController::class, 'updateJob'])->name('update-job');

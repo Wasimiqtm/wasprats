@@ -25,7 +25,7 @@ class ServicePaymentRequest extends FormRequest
      */
     public function rules(Request $request)
     {
-        $usedServicePayment = ServicePayment::where('service_id', $request->service_id)->sum('amount');
+        $usedServicePayment = ServicePayment::where('schedule_job_id', $request->schedule_job_id)->sum('amount');
         $service =  Service::where('id', $request->service_id)->pluck('service_amount')->first();
         $remainingAmount = (int) $service - (int) $usedServicePayment;
         return [

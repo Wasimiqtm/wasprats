@@ -23,7 +23,7 @@ class CalendarController extends Controller
      */
     public function index(Request $request)
     {
-        $customers = Customer::all()->pluck('name','uuid');
+        $customers = Customer::all();
         $services = Service::pluck('name', 'id');
         $jobs = ScheduleJob::where('status',"active")->with('services', 'customer')->get();
 
@@ -116,5 +116,12 @@ class CalendarController extends Controller
         return response()->json([
             'message' => __('Country not exist against this id')
         ], $this->errorStatus);
+    }
+
+    public function getCustmerlocations()
+    {
+        $locations = Customer::where('uuid',request()->id)->with('customer_locations')->first();
+        $getLocations = count($locations->customer_locations) > 0 ?  $locations->customer_locations : null;
+        return response()->json($getLocations);
     }
 }

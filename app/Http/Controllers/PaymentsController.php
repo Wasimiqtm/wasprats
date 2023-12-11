@@ -26,9 +26,7 @@ class PaymentsController extends Controller
     public function index(Request $request, $serviceId)
     {
         $serviceId = (int)$serviceId;
-//        dd($serviceId);
         $job = ScheduleJob::with(['services','customer', 'schedule.user'])->whereId($serviceId)->first();
-//        dd($job);
         $services = ServicePayment::with('service', 'customer', 'user')->where(['schedule_job_id' => $serviceId, 'customer_id' => $job->customer_id])->latest()->get();
 
         $tab = 'all';
@@ -49,9 +47,10 @@ class PaymentsController extends Controller
                     break;
             }
             return Datatables::of($services)
-                /*->addColumn('payable', function ($payment) {
-                    return $payment->service->service_amount - $payment->amount;
-                })*/
+                ->addColumn('tax', function () {
+                  
+                    return (int) Tax::where('is_active',1)->value('rate'). " %";
+                })
                 ->addColumn('action', function ($servicePaymentId) {
                    $action = '<td><div class="overlay-edit">';
                    $action .= '<a href="'.route('single.payment.invoice', $servicePaymentId).'" class="btn btn-icon btn-secondary"><i class="feather icon-user-check"></i></a>';
@@ -75,11 +74,9 @@ class PaymentsController extends Controller
             }
         }
         $usedThings = UsedItem::latest()->get();
-        $scheduleJob = ScheduleJob::whereId($serviceId)->pluck('service_id')->first();
-        $usedServicePayment = ServicePayment::where('service_id', $scheduleJob)->sum('amount');
-        $getServiceAmount = Service::where('id', $scheduleJob)->pluck('service_amount')->first();
+        $usedServicePayment = ServicePayment::where('schedule_job_id', $serviceId)->sum('amount');
         $checkAmount = 0 ;
-        if((int) $usedServicePayment >= (int) $getServiceAmount ) {
+        if((int) $usedServicePayment >= (int) $job->services->service_amount ) {
             $checkAmount = 1 ;
         }
         return view('services.payments', compact('service', 'serviceId', 'customers', 'users', 'job', 'usedThings', 'checkAmount'), get_defined_vars());
@@ -203,7 +200,7 @@ class PaymentsController extends Controller
         $netAmount = ($servicePayment->service->service_amount * $applyTax)/100;
         $servicePayment->staticVat = $netAmount;
         $servicePayment->newAmount = $servicePayment->service->service_amount + $netAmount;
-        $servicePayment->remainingAmount = $servicePayment->service->service_amount - $servicePayment->amount;
+        $servicePayment->remainingAmount = $servicePayment->newAmount - $servicePayment->amount;
         return view('services.single_payment_invoice', compact('servicePayment'));
         // view()->share('servicePayment',$servicePayment);
         // $pdf = PDF::loadView('services.single_payment_invoice');
