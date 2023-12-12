@@ -47,9 +47,11 @@ class PaymentsController extends Controller
                     break;
             }
             return Datatables::of($services)
-                ->addColumn('tax', function () {
-                  
-                    return (int) Tax::where('is_active',1)->value('rate'). " %";
+                ->addColumn('total_amount', function ($service) {
+                    $applyTax =  Tax::where('is_active',1)->value('rate');
+                    $totaltax =  ((int)$service->service->service_amount * (int)$applyTax)/100;
+                    $totalAmount = (int)$service->service->service_amount + (int)$totaltax;
+                  return (int) $totalAmount;
                 })
                 ->addColumn('action', function ($servicePaymentId) {
                    $action = '<td><div class="overlay-edit">';
@@ -74,12 +76,15 @@ class PaymentsController extends Controller
             }
         }
         $usedThings = UsedItem::latest()->get();
+        $applyTax =  Tax::where('is_active',1)->value('rate');
         $usedServicePayment = ServicePayment::where('schedule_job_id', $serviceId)->sum('amount');
         $checkAmount = 0 ;
-        if((int) $usedServicePayment >= (int) $job->services->service_amount ) {
+        $totalTax =  ($job->services->service_amount * $applyTax)/100;
+        $totalAmount =  (int)$totalTax + (int)$job->services->service_amount;
+        if( (int) $totalAmount <= (int) $usedServicePayment ) {
             $checkAmount = 1 ;
         }
-        return view('services.payments', compact('service', 'serviceId', 'customers', 'users', 'job', 'usedThings', 'checkAmount'), get_defined_vars());
+        return view('services.payments', compact('service', 'serviceId', 'customers', 'users', 'job', 'usedThings', 'checkAmount','totalAmount'), get_defined_vars());
     }
 
     /**
