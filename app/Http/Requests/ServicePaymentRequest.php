@@ -29,7 +29,7 @@ class ServicePaymentRequest extends FormRequest
         $applyTax =  Tax::where('is_active',1)->value('rate');
         $usedServicePayment = ServicePayment::where('schedule_job_id', $request->schedule_job_id)->sum('amount');
         $service =  Service::where('id', $request->service_id)->pluck('service_amount')->first();
-        $totalTax = ($service * $applyTax)/100;
+        $totalTax = ((int) $service * (int) $applyTax)/100;
         $totalServiceAmount = (int) $totalTax + (int) $service;
         $remainingAmount = (int) $totalServiceAmount - (int) $usedServicePayment;
         return [
