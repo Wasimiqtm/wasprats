@@ -41,7 +41,7 @@
                 <div class="col-xl-12 col-md-12">
                     <div class="card user-profile-list">
                         <div class="card-body-dd theme-tbl">
-                            <x-table action="false" checkbox="false" :keys="['Service Name', 'Customer', 'Technician', 'Payment Mode', 'Total','Tax', 'Amount Paid', 'Date', '']" />
+                            <x-table action="false" checkbox="false" :keys="['Service Name', 'Customer', 'Technician', 'Payment Mode', 'Total', 'Amount Paid', 'Date', '']" />
                         </div>
                     </div>
                 </div>
@@ -106,8 +106,8 @@
                             </div>
 
                             <div class="form-group">
-                                <label class="form-label">Service Amount</label>
-                                <input type="text" class="form-control" readonly value="{{$job->services->service_amount}}">
+                                <label class="form-label">Service Amount + Vat (20%)</label>
+                                <input type="text" class="form-control" readonly value="{{$totalAmount}}">
                             </div>
 
                             <div class="form-group">
@@ -146,11 +146,11 @@
                         data: 'payment_mode'
                     },
                     {
-                        data: 'service.service_amount'
+                        data: 'total_amount'
                     },
-                    {
-                        data: 'tax'
-                    },
+                    // {
+                    //     data: 'tax'
+                    // },
                     {
                         data: 'amount'
                     },
