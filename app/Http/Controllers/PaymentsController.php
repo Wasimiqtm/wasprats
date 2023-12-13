@@ -94,7 +94,7 @@ class PaymentsController extends Controller
     public function addServicePayment(ServicePaymentRequest $request)
     {
         $service =  Service::where('id', $request->service_id)->first();
-        $payment_mode = ($request->amount < $service->service_amount) ? 'partial':'full';
+        $payment_mode = ($request->amount < amountWithTax($request->service_id)) ? 'partial':'full';
         $data = [
             'schedule_job_id' => $request->schedule_job_id,
             'service_id' => $service->id,
@@ -190,7 +190,7 @@ class PaymentsController extends Controller
 
     public function singlePaymentInvoice($servicePaymentId)
     {
-       
+
         $currentTime = Carbon::now();
         $fileName =  $currentTime->toDateTimeString();
         $servicePayment = ServicePayment::where('id', $servicePaymentId)->with('service', 'customer', 'user')->first();
