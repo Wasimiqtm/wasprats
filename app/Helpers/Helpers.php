@@ -2,6 +2,7 @@
 
 use App\Models\Company;
 use App\Models\Country;
+use App\Models\Tax;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
@@ -753,6 +754,25 @@ if (!function_exists('getEventObject')) {
             'classNames' => 'job-event-' . $job->id,
             'time' => date("h:i a", strtotime($job->date)) . '-' . date("h:i a", strtotime($job->time))
         ];
+    }
+
+}
+
+/**
+ * Amount with tax
+ *
+ * @param $routes
+ * @param $output
+ * @return mix
+ */
+if (!function_exists('amountWithTax')) {
+
+    function amountWithTax($serviceId)
+    {
+        $service =  Service::where('id', $serviceId)->first();
+        $applyTax =  Tax::where('is_active',1)->value('rate');
+        $totaltax =  ($service->service_amount * (int)$applyTax)/100;
+        return $totalAmount = $service->service_amount + (int)$totaltax;
     }
 
 }
