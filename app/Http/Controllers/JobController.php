@@ -375,8 +375,8 @@ class JobController extends Controller
             })->addColumn('tax', function ($data) use ($tax_rate) {
                 return $tax_rate;
             })
-            ->addColumn('total_amount', function ($data) use ($tax_rate) {
-                return $data->services->service_amount + $tax_rate;
+            ->addColumn('total_amount', function ($data) {
+                return amountWithTax($data->services->id);
             })
             ->addColumn('action', function ($customer) {
 
@@ -407,6 +407,7 @@ class JobController extends Controller
 
     public function customersJobsInvoices(Request $request)
     {
+        $tax = Tax::where('is_active',1)->value('rate');
         $dateFilter = json_decode(request()->extra_search);
         // dd($dateFilter);
         // $tab = 'all';
@@ -425,7 +426,7 @@ class JobController extends Controller
             $endDate = $dateFilter->end_date;
             $customerId = $dateFilter->customer_id;
             $userTechId = $dateFilter->user_tech_id;
-             $schedule = ScheduleJob::with(['customer.service_payments', 'services.service_payment', 'schedule.user'])
+             $schedule = ScheduleJob::has('payments')->with(['customer.service_payments', 'services.service_payment', 'schedule.user', 'payments'])
 
                                         ->when(!empty($dateFilter->customer_id) && $dateFilter->customer_id != "null", function ($q) use($customerId) {
                                             return $q->where('customer_id', $customerId);
@@ -467,14 +468,14 @@ class JobController extends Controller
                     return $data->schedule->name;
                 }
             })
-            ->addColumn('payment_status', function ($data) {
-                 if((int) $data->services->service_amount < (int)($data->customer->service_payments)->sum('amount')) {
+            /*->addColumn('payment_status', function ($data) use ($tax) {
+                 if((int) $data->services->service_amount + $tax < (int)($data->customer->service_payments)->sum('amount')) {
                     return "Fully Paid";
                  }else {
                     return "Partial Paid";
                  }
 
-            })
+            })*/
             ->addColumn('status', function ($data) {
                     return $data->status;
             })

@@ -31,4 +31,9 @@ class ScheduleJob extends Model
     {
         return $this->belongsTo(Schedule::class);
     }
+
+    public function payments()
+    {
+        return $this->hasMany(ServicePayment::class);
+    }
 }
