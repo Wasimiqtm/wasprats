@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Job;
 use App\Models\Schedule;
 use App\Models\ScheduleJob;
+use App\Models\Tax;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
@@ -241,6 +242,21 @@ class UserController extends Controller
                 ->addColumn('service_name',function ($item){
                     return $item->services->name;
                 })
+               ->addColumn('service_amount',function ($item){
+                   $totalAmount = (int)$item->services->service_amount;
+                   return (int) $totalAmount;
+               })
+               ->addColumn('tax',function ($item){
+                   $applyTax =  Tax::where('is_active',1)->value('rate');
+                   $tax_amount =  ((int)$item->services->service_amount * (int)$applyTax)/100;
+                   return (int) $tax_amount;
+               })
+               ->addColumn('total_amount',function ($item){
+                   $applyTax =  Tax::where('is_active',1)->value('rate');
+                   $totaltax =  ((int)$item->services->service_amount * (int)$applyTax)/100;
+                   $totalAmount = (int)$item->services->service_amount + (int)$totaltax;
+                   return (int) $totalAmount;
+               })
                ->addColumn('action', function ($item) {
                    $action = '<td><div class="overlay-edit">';
                    $action .= '<a href="'.route('service.payments', $item->id)."?tab=all".'" class="btn btn-icon btn-secondary"><i class="feather icon-user-check"></i></a>';

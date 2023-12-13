@@ -1,7 +1,7 @@
 <x-app-layout>
     <div class="pcoded-main-container">
         <div class="pcoded-content">
-            <x-breadcrumb title="Customers Details"/>
+            <x-breadcrumb title="Customer {{ $customer->first_name.' '.$customer->last_name }} Details" />
 
             <div class="row">
                 <div class="row">

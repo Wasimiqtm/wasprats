@@ -7,6 +7,9 @@
                     <div class="card-body-dd theme-tbl">
                         <x-table action="false" checkbox="false" :keys="[
                                 'Service Name',
+                                'Service Amount',
+                                'Tax',
+                                'Total Amount',
                                 'Customer Name',
                                 'Status',
                                 ''
@@ -28,7 +31,15 @@
 
             var datatable_columns = [{
                 data: 'service_name'
+            },{
+              data: 'service_amount'
             },
+                {
+                    data: 'tax'
+                },
+                {
+                    data: 'total_amount'
+                },
                 {
                     data: 'customer.name'
                 },
