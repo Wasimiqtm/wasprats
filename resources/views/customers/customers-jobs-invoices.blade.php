@@ -23,7 +23,7 @@
                          <option value="{{$user->id}}">{{$user->name}}</option>
                         @endforeach
                     </select>
-                </div> 
+                </div>
                 <div class="mb-3">
                     <label for="select-technician" class="form-label">Select Customer</label>
                     <select id="customerId" class="form-select" onchange="clickUserCustomer()">
@@ -32,7 +32,7 @@
                          <option value="{{$customer['id']}}">{{$customer['first_name']}} {{$customer['last_name']}}</option>
                         @endforeach
                     </select>
-                </div> 
+                </div>
             </div>
              <div class="row">
                 <div style="margin: 20px 0px;">
@@ -47,7 +47,7 @@
                                 'Customer Name',
                                 'Technician Name',
                                 'Amount',
-                                'Payment',
+                                {{--'Payment',--}}
                                 'Status',
                                 'Created At'
                             ]"/>
@@ -65,7 +65,7 @@
         <script src="{{asset('js/plugins/highchart.min.js')}}"></script>
         <script src="{{asset('js/plugins/daterange-picker.js')}}"></script>
         <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-        
+
         <script type="text/javascript">
             $("document").ready(function () {
             var datatable_url = route('customers.jobs.invoices.ajax');
@@ -83,9 +83,9 @@
                 {
                     data: 'services.service_amount'
                 },
-                {
+                /*{
                     data: 'payment_status'
-                },
+                },*/
                 {
                     data: 'status'
                 },
@@ -95,8 +95,8 @@
             ];
             var start = moment().subtract(29, 'days');
             var endDate = moment();
-            var techId = $("#technicianID option:selected" ).val(); 
-            var customerId = $("#customerId option:selected" ).val(); 
+            var techId = $("#technicianID option:selected" ).val();
+            var customerId = $("#customerId option:selected" ).val();
                 $('input[name="daterange"]').daterangepicker({
                     startDate: start,
                     endDate: endDate,
@@ -224,7 +224,7 @@
                 var selectedCustomerValue = selectedOption.value;
              get_customer_id = selectedCustomerValue
 
-            var techId = $("#technicianID option:selected" ).val(); 
+            var techId = $("#technicianID option:selected" ).val();
             [startDate, endDate] = $('input[name="daterange"]').val().split(' - ');
 
                     var dataPOST = {start_date:startDate,end_date:endDate,user_tech_id:techId, customer_id:get_customer_id}
@@ -255,13 +255,13 @@
                         }
                     });
             }
-   
+
      function clickUserTechnician() {
         var selectElement = document.getElementById("technicianID");
         var selectedOption = selectElement.options[selectElement.selectedIndex];
         var selectedTechnicianValue = selectedOption.value;
            var  get_user_tech_id = selectedTechnicianValue
-           var customerId = $("#customerId option:selected" ).val(); 
+           var customerId = $("#customerId option:selected" ).val();
             [startDate, endDate] = $('input[name="daterange"]').val().split(' - ');
                     var dataPOST = {start_date:startDate,end_date:endDate, customer_id:customerId,user_tech_id:get_user_tech_id}
                     var   pageLength=10;
