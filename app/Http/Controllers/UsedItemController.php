@@ -23,7 +23,7 @@ class UsedItemController extends Controller
         if ($request->ajax()) {
             $usedItems = UsedItem::query()->latest();
             $user = Auth::user();
-            
+
             return Datatables::of($usedItems)
                 ->addColumn('action', function ($item) use ($user) {
 
@@ -33,7 +33,7 @@ class UsedItemController extends Controller
                         $action .= '<a href="'.route('things.edit', $item->id).'" class="btn btn-icon btn-secondary"><i class="feather icon-edit-2"></i></a>';
                     }
 
-                    if ($user->can('usedItems Delete')) {    
+                    if ($user->can('usedItems Delete')) {
                         $action .= '<a href="'.route('things.destroy', $item->id).'" class="btn btn-icon btn-danger btn-delete"><i class="feather icon-trash-2"></i></a>';
                     }
                     $action .= '</div></td>';
@@ -106,7 +106,7 @@ class UsedItemController extends Controller
     {
         $item = UsedItem::find($item);
         $item->update($request->validated());
-        
+
         Session::flash('success', __('Item successfully updated!'));
         return redirect()->route('things.index');
     }

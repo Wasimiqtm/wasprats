@@ -24,7 +24,8 @@ class UsedItemRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|max:50|unique:used_items,name,' . $this->id,
+            'code' => 'required|max:50|unique:used_items,code,' . $this->id,
+            'description' => 'nullable'
         ];
     }
 }

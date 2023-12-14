@@ -6,10 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class UsedItem extends Model
 {
-    
+
     protected $table = 'used_items';
 
     protected $fillable = [
-        'name'
+        'name',
+        'code',
+        'description'
     ];
 }
