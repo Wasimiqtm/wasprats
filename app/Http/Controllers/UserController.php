@@ -39,6 +39,16 @@ class UserController extends Controller
                 ->addColumn('role', function ($user) {
                     return $user->getRoleNames()->first();
                 })
+                ->addColumn('image', function ($user) {
+                    $badge = '<span style="overflow: visible; position: relative; width: 130px;">';
+                    if($user->document != '') {
+                        $badge .= '<a href="' . asset('uploads/' . $user->document). '" target="_blank" class="badge bg-success" > View File </a>';
+                    } else {
+                        $badge .= '<a href="#" class="badge bg-success" > No File </a>';
+                    }
+                    $badge .= '</span>';
+                    return $badge;
+                })
                 ->addColumn('action', function ($user) use ($auth) {
 
                     $action = '<td><div class="overlay-edit">';
@@ -59,7 +69,7 @@ class UserController extends Controller
                     return $action;
                 })
                 ->editColumn('id', 'ID: {{$id}}')
-                ->rawColumns(['is_active', 'action'])
+                ->rawColumns(['image', 'is_active', 'action'])
                 ->make(true);
         }
 
@@ -87,8 +97,19 @@ class UserController extends Controller
     {
         $request->merge([
             'name' => $request->first_name . ' ' . $request->last_name,
-            'password' => Hash::make($request->password)
+            'password' => Hash::make($request->password),
         ]);
+
+        /*upload image*/
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = time().'.'.$image->getClientOriginalExtension();
+            $request->merge([
+                'document' => $imageName
+            ]);
+            $image->move(public_path('uploads'), $imageName);
+        }
+
         $user = User::create($request->all());
 
         if ($user) {
@@ -138,6 +159,14 @@ class UserController extends Controller
      */
     public function update(User $user, UserRequest $request)
     {
+        /*upload image*/
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = time().'.'.$image->getClientOriginalExtension();
+            $data['document'] = $imageName;
+            $image->move(public_path('uploads'), $imageName);
+        }
+
         $data['name'] = $request->first_name . ' ' . $request->last_name;
 
         if ($request->filled('password')) {

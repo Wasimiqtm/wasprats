@@ -8,7 +8,7 @@
                 <div class="col-xl-12 col-md-12">
                     <div class="card user-profile-list">
                         <div class="card-body-dd theme-tbl">
-                            <x-table action="false" checkbox="false" :keys="['Name', 'Username', 'Email', 'Role', 'License No', '']" />
+                            <x-table action="false" checkbox="false" :keys="['Name', 'Username', 'Email', 'Role', 'Image', '']" />
                         </div>
                     </div>
                 </div>
@@ -35,7 +35,10 @@
                         data: 'role'
                     },
                     {
-                        data: 'license_no'
+                        data: 'image',
+                        width: '10%',
+                        orderable: false,
+                        searchable: false
                     },
                     {
                         data: 'action',

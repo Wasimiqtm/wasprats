@@ -32,6 +32,7 @@ class UserRequest extends FormRequest
             'license_no' => 'nullable|max:50',
             'email' => 'required|email|max:100|unique:users,email,' . $this->id,
             'address' => 'required',
+            'document' => 'nullable'
         ];
 
         if ($this->id) {

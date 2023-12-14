@@ -4,11 +4,11 @@
         <div class="pcoded-wrapper">
             <div class="pcoded-content">
                 <div class="pcoded-inner-content">
-                    
+
                     <!-- [ breadcrumb ] start -->
                     <x-breadcrumb title="Create User" :breadcrumbs="[['name' => 'Users', 'allow' => true, 'link' => route('users.index')],['name' => 'Update', 'allow' => true, 'link' => '#']]" />
                     <!-- [ breadcrumb ] end -->
-                    
+
                     <div class="main-body">
                         <div class="page-wrapper">
                             <!-- [ Main Content ] start -->
@@ -21,6 +21,7 @@
                                             'method' => 'PATCH',
                                             'id' => 'formValidation',
                                             'route' => ['users.update', $user->uuid],
+                                            'files' => true
                                             ]) !!}
                                             <div class="card-body row">
                                                 {!! Form::hidden('id', null) !!}
@@ -45,7 +46,7 @@
     <!-- [ Main Content ] end -->
 
 
-    @push('scripts')    
+    @push('scripts')
     <script src="{{ asset('js/plugins/jquery.validate.min.js') }}"></script>
     <script type="text/javascript">
         $('document').ready(function () {

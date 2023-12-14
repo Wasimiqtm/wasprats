@@ -49,3 +49,7 @@ if(@$user) {
     {!! Form::text('address', null, ['class' => 'form-control ' . $errors->first('address', 'error'), 'placeholder' => 'Address', 'required', 'maxlength' => '50']) !!}
     {!! $errors->first('address', '<label class="error">:message</label>') !!}
 </div>
+<div class="form-group col-md-6">
+    {!! Form::label('image', 'Image', ['class' => 'form-label required-input']) !!}
+    {!! Form::file('image') !!}
+</div>

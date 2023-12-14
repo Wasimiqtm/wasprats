@@ -4,11 +4,11 @@
         <div class="pcoded-wrapper">
             <div class="pcoded-content">
                 <div class="pcoded-inner-content">
-                    
+
                     <!-- [ breadcrumb ] start -->
                     <x-breadcrumb title="Create User" :breadcrumbs="[['name' => 'Users', 'allow' => true, 'link' => route('users.index')],['name' => 'Create', 'allow' => true, 'link' => route('users.create')]]" />
                     <!-- [ breadcrumb ] end -->
-                    
+
                     <div class="main-body">
                         <div class="page-wrapper">
                             <!-- [ Main Content ] start -->
@@ -17,7 +17,7 @@
                                 <div class="col-xl-12">
                                     <div class="card card-custom gutter-b example example-compact">
                                         <!--begin::Form-->
-                                        {!! Form::open(['route' => 'users.store', 'id' => 'formValidation']) !!}
+                                        {!! Form::open(['route' => 'users.store', 'id' => 'formValidation', 'files' => true]) !!}
                                             <div class="card-body row">
                                                 @include ('users.form')
                                             </div>
@@ -40,7 +40,7 @@
     <!-- [ Main Content ] end -->
 
 
-    @push('scripts')    
+    @push('scripts')
     <script src="{{ asset('js/plugins/jquery.validate.min.js') }}"></script>
     <script type="text/javascript">
         $('document').ready(function () {
