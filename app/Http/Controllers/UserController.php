@@ -165,6 +165,11 @@ class UserController extends Controller
             $imageName = time().'.'.$image->getClientOriginalExtension();
             $data['document'] = $imageName;
             $image->move(public_path('uploads'), $imageName);
+
+            /*remove old image*/
+            if($user->document && $user->document != '') {
+                @unlink(public_path("/uploads/".$user->document));
+            }
         }
 
         $data['name'] = $request->first_name . ' ' . $request->last_name;
