@@ -7,11 +7,12 @@
                     <div class="card-body-dd theme-tbl">
                         <x-table action="false" checkbox="false" :keys="[
                                 'Service Name',
-                                'Service Amount',
+                                'Amount',
                                 'Tax',
-                                'Total Amount',
+                                'Total',
                                 'Customer Name',
                                 'Status',
+                                'Items Invoice',
                                 ''
                             ]"/>
                     </div>
@@ -45,6 +46,9 @@
                 },
                 {
                     data: 'status'
+                },
+                {
+                    data: 'items_invoice'
                 },
                 {
                     data: 'action',

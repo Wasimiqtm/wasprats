@@ -291,12 +291,19 @@ class UserController extends Controller
                    $totalAmount = (int)$item->services->service_amount + (int)$totaltax;
                    return (int) $totalAmount;
                })
+               ->addColumn('items_invoice', function ($item) {
+                   $badge = '<span style="overflow: visible; position: relative; width: 130px;">';
+                   $badge .= '<a href="' .route('item.invoice', $item->id). '" target="_blank" class="badge bg-success" > Items Invoice </a>';
+                   $badge .= '</span>';
+                   return $badge;
+               })
                ->addColumn('action', function ($item) {
                    $action = '<td><div class="overlay-edit">';
                    $action .= '<a href="'.route('service.payments', $item->id)."?tab=all".'" class="btn btn-icon btn-secondary"><i class="feather icon-user-check"></i></a>';
                    $action .= '</div></td>';
                    return $action;
                })
+               ->rawColumns(['items_invoice', 'action'])
                 ->make(true);
         }
         return view('users.user_detail');

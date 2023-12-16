@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ItemsInvoice;
+use App\Models\ScheduleJob;
 use Illuminate\Http\Request;
-
 use App\Http\Requests\UsedItemRequest;
 use App\Models\UsedItem;
 
@@ -130,5 +131,81 @@ class UsedItemController extends Controller
         return response()->json([
             'message' => __('Item not exist against this id')
         ], $this->errorStatus);
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function itemsInvoice(Request $request, $scheduleJobId)
+    {
+        if ($request->ajax()) {
+            $itemsInvoice = ItemsInvoice::with('schedule_job.services', 'used_items')->where(['schedule_job_id' => $scheduleJobId]);
+            return Datatables::of($itemsInvoice)
+                ->addColumn('service_name', function ($itemInvoice) {
+                    return $itemInvoice->schedule_job->services->name;
+                })
+                ->addColumn('code', function ($itemInvoice) {
+                    return $itemInvoice->used_items->code;
+                })
+                ->addColumn('quantity', function ($itemInvoice) {
+                    return $itemInvoice->quantity;
+                })
+                ->addColumn('action', function ($servicePaymentId) {
+                    $action = '<td><div class="overlay-edit">';
+                    $action .= '<a href="'.route('single.payment.invoice', $servicePaymentId).'" class="btn btn-icon btn-secondary"><i class="feather icon-user-check"></i></a>';
+                    $action .= '</div></td>';
+                    return $action;
+                })
+                ->editColumn('id', 'ID: {{$id}}')
+                /*->editColumn('created_at', function (ServicePayment $servicePayment) {
+                    return \Carbon\Carbon::parse($servicePayment->created_at )->isoFormat('DD-MM-YYYY');
+                })*/
+                ->rawColumns(['action'])
+                ->make(true);
+        }
+
+        $items = UsedItem::pluck('code', 'id')->prepend('Select Item', '');
+        $job = ScheduleJob::with('services')->whereId($scheduleJobId)->first();
+        return view('used-items.items-invoices.index', compact('scheduleJobId', 'items', 'job'));
+    }
+
+    public function createItemsInvoice()
+    {
+        $data = request()->all();
+        $dataFind = [];
+
+        foreach ($data['item_id'] as $key=>$value){
+            $dataFind[] = [
+                'schedule_job_id' => $data['schedule_job_id'],
+                'used_items_id' => $value,
+                'quantity' => $data['item_quantity'][$key]
+            ];
+        }
+
+        foreach ($dataFind as $value){
+            ItemsInvoice::create([
+                'schedule_job_id' => $value['schedule_job_id'],
+                'used_items_id' => $value['used_items_id'],
+                'quantity' => $value['quantity']
+            ]);
+        }
+
+        return ['status' => true];
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function usedItemsList()
+    {
+        $items = UsedItem::pluck('code', 'id')->prepend('Select Item', '');
+        return [
+            'success' => true,
+            'html' => view('used-items.partial.item-row', get_defined_vars())->render()
+        ];
     }
 }

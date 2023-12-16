@@ -73,6 +73,10 @@ Route::middleware(['auth'])->group(function () {
     Route::any('users-get-active-jobs', [UserController::class, 'getJobsDetails'])->name('users.get.active.jobs');
     Route::get('print-jobs-data', [UserController::class, 'printJobsData'])->name('users.print.jobs.data');
     Route::get('job-invoice/{user_id}', [UserController::class, 'jobInvoice'])->name('job.invoice');
+    Route::get('items-invoice/{schedule_job_id}', [UsedItemController::class, 'itemsInvoice'])->name('item.invoice');
+    Route::post('items-invoice/{schedule_job_id}', [UsedItemController::class, 'itemsInvoice'])->name('item.invoice.ajax');
+    Route::post('items-invoice-create', [UsedItemController::class, 'createItemsInvoice'])->name('create.item.invoice');
+    Route::get('used-items-list', [UsedItemController::class, 'usedItemsList'])->name('usedItems.listing');
 
     /*list payments technician*/
     Route::get('get-technician-amount/{user_id}', [UserController::class, 'getTechnicianAmount'])->name('technician.amount');

@@ -36,4 +36,9 @@ class ScheduleJob extends Model
     {
         return $this->hasMany(ServicePayment::class);
     }
+
+    public function itemsInvoice()
+    {
+        return $this->hasMany(ItemsInvoice::class);
+    }
 }
