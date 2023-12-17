@@ -78,6 +78,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('items-invoice-create', [UsedItemController::class, 'createItemsInvoice'])->name('create.item.invoice');
     Route::get('used-items-list', [UsedItemController::class, 'usedItemsList'])->name('usedItems.listing');
     Route::POST('items-invoice-edit', [UsedItemController::class, 'getEditItemsInvoice'])->name('edit.item.invoice');
+    Route::Delete('items-invoice-delete/{id}', [UsedItemController::class, 'deleteItemInvoice'])->name('delete.item.invoice');
 
     /*list payments technician*/
     Route::get('get-technician-amount/{user_id}', [UserController::class, 'getTechnicianAmount'])->name('technician.amount');

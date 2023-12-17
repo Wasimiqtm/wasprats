@@ -4,12 +4,12 @@
         <div class="pcoded-content">
             <x-breadcrumb title="{{ $job->services->name }} Items Invoice" />
             <a class="btn btn-primary" id="addinvoice">Add New invoice</a>
-            <a href="javascript:void(0)" data-id="{{$scheduleJobId}}" class="btn btn-primary" id="updateinvoice">Update invoice</a>
+{{--            <a href="javascript:void(0)" data-id="{{$scheduleJobId}}" class="btn btn-primary" id="updateinvoice">Update invoice</a>--}}
             <div class="row">
                 <div class="col-xl-12 col-md-12">
                     <div class="card user-profile-list">
                         <div class="card-body-dd theme-tbl">
-                            <x-table action="false" checkbox="false" :keys="['Item Code', 'Quantity']" />
+                            <x-table action="false" checkbox="false" :keys="['Item Code', 'Quantity', '']" />
                         </div>
                     </div>
                 </div>
@@ -29,7 +29,9 @@
                 <div class="modal-body">
                     <form id="invoiceId">
                         <input type="hidden" name="schedule_job_id" value="{{$scheduleJobId}}">
-                        @include('used-items.items-invoices.add_invoices')
+                        <input type="hidden" name="item_invoice_id" id="item_invoice_id" value="">
+
+                        @include('used-items.items-invoices.add_update_invoices')
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -53,36 +55,23 @@
                     },
                     {
                         data: 'quantity'
+                    },
+                    {
+                        data: 'action'
                     }
                 ];
 
                 create_datatables(datatable_url, datatable_columns);
             });
 
+            /*add invoice function*/
             $("body").on('click', "#addinvoice", function () {
+                /*reset and show modal*/
+                $("#invoiceId").trigger("reset");
                 $("#invoiceModal").modal('show')
             });
 
-            /*$("body").on('click', "#updateinvoice", function () {
-
-                $.ajax({
-                    url: '{route('update.item.invoice')}}',
-                    type: 'POST',
-                    "headers": {'X-CSRF-TOKEN': "{{csrf_token()}}"},
-                    data:$("#invoiceId").serialize(),
-                    success: function (data) {
-
-                        $("#invoiceModal").modal('hide')
-                        $("div.modal-backdrop").remove();
-                        $("body").css({'overflow': 'auto', 'padding-right': '0px'});
-                        window.location.reload();
-
-                    }
-                })
-
-                $("#invoiceModal").modal('show')
-            });*/
-
+            /*update invoice item*/
             $("body").on('click', "#updateinvoice", function () {
                 var id = $(this).attr('data-id')
                 $.ajax({
@@ -90,11 +79,22 @@
                     type: 'POST',
                     "headers": {'X-CSRF-TOKEN': "{{csrf_token()}}"},
                     data: {
-                        schedule_job_id: id,
+                        id: id,
                     },
                     success: function (data) {
                         console.log(data);
+                        $("#item_qty").val(data.data.quantity)
+                        $("#item_description").val(data.data.used_items.description)
+                        $("#item_id").val(data.data.used_items.id)
+                        $("#edit_item_id").val(data.data.used_items.id)
+                        $("#item_invoice_id").val(id)
 
+                        /*hide add remove buttons*/
+                        if(id) {
+                            $('.removeRow').hide();
+                            $('.loadRow').hide();
+                        }
+                        $("#invoiceModal").modal('show');
                     }
                 })
             })
@@ -113,7 +113,6 @@
                         $("div.modal-backdrop").remove();
                         $("body").css({'overflow': 'auto', 'padding-right': '0px'});
                         window.location.reload();
-
                     }
                 })
             });

@@ -16,18 +16,18 @@
 
         <tr class='item_row'>
             <td>
-              <select class="form-control items" name="item_id[]" id="item_id['{{$key}}']">
+              <select class="form-control items" id="edit_item_id" name="item_id[]" id="item_id['{{$key}}']">
                     @foreach($items as $id=>$name)
                         <option value="{{$id}}">{{$name}}</option>
                     @endforeach
               </select>
                 <label id="item_id[{{ $key }}]-error" class="error" for="item_id[']"></label>
-                <input type="hidden" name="item_id[{{ $key }}]"
+                <input type="hidden" name="item_id[{{ $key }}]" id="item_id"
                        class="item_id" />
             </td>
             <td>
                 <input required type='number' style='width:60px' name="item_quantity[{{$key}}]"
-                       class='form-control item_quantity'  step="1"
+                       class='form-control item_quantity' id="item_qty"  step="1"
                        min="1" />
                 <label id="item_quantity[{{ $key }}]-error" class="error"
                        for="item_quantity[{{ $key }}]"></label>
@@ -42,7 +42,7 @@
 <div class="row">
     <div class="col-sm-12">
         <h6>Used Item Description:</h6>
-        {!! Form::textarea('term', null, ['class' => 'form-control', 'rows' => 2]) !!}
+        {!! Form::textarea('term', null, ['class' => 'form-control', 'rows' => 2, 'id' => 'item_description', 'readonly' => 'readonly']) !!}
     </div>
 </div>
 
@@ -72,37 +72,6 @@
                     } else {
 
                         _item.find(".item_id").val(itemId);
-                        /*$.ajax({
-                            type: "GET",
-                            url: route('services.getItemDetails', itemId),
-                            dataType: "json",
-                            success: function(data, textStatus, jqXHR) {
-                                if (data.success) {
-
-                                    var item = data.item;
-                                    //if (product.final_quantity && product.final_quantity > 0) {
-
-                                    _item.find(".item_id").val(item.id);
-                                    _item.find('.item_cost').val(item.cost);
-
-                                    calculateAmount();
-
-                                    var wrapped = _(items).push(itemId);
-                                    wrapped.commit();
-                                    products = _.uniqBy(items);
-                                    _el.attr("disabled", true);
-                                    // } else {
-                                    //     _el.val('').change();
-                                    //     errorMessage('This item is not available for sale');
-                                    // }
-
-
-                                } else {
-                                    errorMessage(data.message);
-                                }
-                                stopOverlay(_el);
-                            }
-                        });*/
                     }
                 }
 
@@ -115,7 +84,6 @@
                     return n == itemId;
                 });
                 _parent.remove();
-                calculateAmount();
             });
 
         });

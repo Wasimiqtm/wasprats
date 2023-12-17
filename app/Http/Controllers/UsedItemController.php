@@ -152,10 +152,12 @@ class UsedItemController extends Controller
                 ->addColumn('quantity', function ($itemInvoice) {
                     return $itemInvoice->quantity;
                 })
-                ->addColumn('action', function ($servicePaymentId) {
+                ->addColumn('action', function ($itemInvoice) {
                     $action = '<td><div class="overlay-edit">';
-                    $action .= '<a href="'.route('single.payment.invoice', $servicePaymentId).'" class="btn btn-icon btn-secondary"><i class="feather icon-user-check"></i></a>';
+                    $action .= '<a href="javascript:void(0)" id="updateinvoice" data-id="' . $itemInvoice->id . '" class="btn btn-icon btn-secondary"><i class="feather icon-edit-2"></i></a>';
+                        $action .= '<a href="'.route('delete.item.invoice', $itemInvoice->id).'" class="btn btn-icon btn-danger btn-delete"><i class="feather icon-trash-2"></i></a>';
                     $action .= '</div></td>';
+
                     return $action;
                 })
                 ->editColumn('id', 'ID: {{$id}}')
@@ -183,15 +185,22 @@ class UsedItemController extends Controller
                 'quantity' => $data['item_quantity'][$key]
             ];
         }
-
-        foreach ($dataFind as $value){
-            ItemsInvoice::create([
-                'schedule_job_id' => $value['schedule_job_id'],
-                'used_items_id' => $value['used_items_id'],
-                'quantity' => $value['quantity']
-            ]);
+        if($data['item_invoice_id'])
+        {
+            ItemsInvoice::whereId($data['item_invoice_id'])
+                ->update([
+                    'used_items_id' => $dataFind[0]['used_items_id'],
+                    'quantity' => $dataFind[0]['quantity'],
+                ]);
+        } else {
+            foreach ($dataFind as $value){
+                ItemsInvoice::create([
+                    'schedule_job_id' => $value['schedule_job_id'],
+                    'used_items_id' => $value['used_items_id'],
+                    'quantity' => $value['quantity']
+                ]);
+            }
         }
-
         return ['status' => true];
     }
 
@@ -211,7 +220,22 @@ class UsedItemController extends Controller
 
     public function getEditItemsInvoice()
     {
-        $itemsInvoiceData = ItemsInvoice::with('schedule_job.services', 'used_items')->where('schedule_job_id', \request()->schedule_job_id)->get();
+        $itemsInvoiceData = ItemsInvoice::with('schedule_job.services', 'used_items')->whereId(\request()->id)->first();
         return ['data' => $itemsInvoiceData];
+    }
+
+    public function deleteItemInvoice($item)
+    {
+        $item = ItemsInvoice::find($item);
+        if ($item) {
+            $item->delete();
+            return response()->json([
+                'message' => __('Item deleted!')
+            ], $this->successStatus);
+        }
+
+        return response()->json([
+            'message' => __('Item not exist against this id')
+        ], $this->errorStatus);
     }
 }
