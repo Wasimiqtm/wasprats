@@ -79,6 +79,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('used-items-list', [UsedItemController::class, 'usedItemsList'])->name('usedItems.listing');
     Route::POST('items-invoice-edit', [UsedItemController::class, 'getEditItemsInvoice'])->name('edit.item.invoice');
     Route::Delete('items-invoice-delete/{id}', [UsedItemController::class, 'deleteItemInvoice'])->name('delete.item.invoice');
+    Route::POST('get-single-item', [UsedItemController::class, 'getSingleItem'])->name('get.single.item');
 
     /*list payments technician*/
     Route::get('get-technician-amount/{user_id}', [UserController::class, 'getTechnicianAmount'])->name('technician.amount');

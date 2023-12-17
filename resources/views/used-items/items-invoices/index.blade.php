@@ -68,11 +68,31 @@
             $("body").on('click', "#addinvoice", function () {
                 /*reset and show modal*/
                 $("#invoiceId").trigger("reset");
+                $("#item_description").hide();
+                $('.removeRow').show();
+                $('.loadRow').show();
                 $("#invoiceModal").modal('show')
             });
 
+            $('#invoiceId').on('change', 'select', function() {
+
+                $.ajax({
+                    url: '{{route('get.single.item')}}',
+                    type: 'POST',
+                    "headers": {'X-CSRF-TOKEN': "{{csrf_token()}}"},
+                    data: {
+                        id: this.value,
+                    },
+                    success: function (data) {
+                        $("#item_description").val(data.description)
+                    }
+                })
+            });
+
+
             /*update invoice item*/
             $("body").on('click', "#updateinvoice", function () {
+                $("#item_description").show();
                 var id = $(this).attr('data-id')
                 $.ajax({
                     url: '{{route('edit.item.invoice')}}',

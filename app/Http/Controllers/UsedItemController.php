@@ -238,4 +238,10 @@ class UsedItemController extends Controller
             'message' => __('Item not exist against this id')
         ], $this->errorStatus);
     }
+
+    public function getSingleItem(Request $request)
+    {
+        $result = UsedItem::find($request->id);
+        return $result;
+    }
 }

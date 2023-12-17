@@ -35,17 +35,16 @@
 
             <td class="text-center"><i class="btn btn-sm fa fa-trash removeRow text-danger"></i></td>
         </tr>
+        <tr>
+            <div class="col-sm-12">
+                <h6>Used Item Description:</h6>
+                {!! Form::textarea('term', null, ['class' => 'form-control', 'rows' => 2, 'id' => 'item_description', 'readonly' => 'readonly']) !!}
+            </div>
+        </tr>
 
         </tbody>
     </table>
 </div>
-<div class="row">
-    <div class="col-sm-12">
-        <h6>Used Item Description:</h6>
-        {!! Form::textarea('term', null, ['class' => 'form-control', 'rows' => 2, 'id' => 'item_description', 'readonly' => 'readonly']) !!}
-    </div>
-</div>
-
 
 @push('scripts')
     <script src="{{ asset('js/plugins/jquery.validate.min.js') }}"></script>
