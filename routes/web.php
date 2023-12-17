@@ -76,10 +76,13 @@ Route::middleware(['auth'])->group(function () {
     Route::get('items-invoice/{schedule_job_id}', [UsedItemController::class, 'itemsInvoice'])->name('item.invoice');
     Route::post('items-invoice/{schedule_job_id}', [UsedItemController::class, 'itemsInvoice'])->name('item.invoice.ajax');
     Route::post('items-invoice-create', [UsedItemController::class, 'createItemsInvoice'])->name('create.item.invoice');
+
+    /*used items*/
     Route::get('used-items-list', [UsedItemController::class, 'usedItemsList'])->name('usedItems.listing');
     Route::POST('items-invoice-edit', [UsedItemController::class, 'getEditItemsInvoice'])->name('edit.item.invoice');
     Route::Delete('items-invoice-delete/{id}', [UsedItemController::class, 'deleteItemInvoice'])->name('delete.item.invoice');
     Route::POST('get-single-item', [UsedItemController::class, 'getSingleItem'])->name('get.single.item');
+    Route::get('print-items-invoice/{schedule_job_id}', [UsedItemController::class, 'printItemsInvoice'])->name('print.items.invoice');
 
     /*list payments technician*/
     Route::get('get-technician-amount/{user_id}', [UserController::class, 'getTechnicianAmount'])->name('technician.amount');

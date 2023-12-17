@@ -7,7 +7,7 @@
                 <div class="col-xl-12 col-md-12">
                     <div class="card user-profile-list">
                         <div class="card-body-dd theme-tbl">
-                            <x-table action="false" :keys="['Code','']" />
+                            <x-table action="false" :keys="['Code','Description', '']" />
                         </div>
                     </div>
                 </div>
@@ -24,6 +24,9 @@
                 var datatable_columns = [
                     {
                         data: 'code'
+                    },
+                    {
+                        data: 'description'
                     },
                     {
                         data: 'action',

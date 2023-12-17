@@ -3,13 +3,20 @@
     <div class="pcoded-main-container">
         <div class="pcoded-content">
             <x-breadcrumb title="{{ $job->services->name }} Items Invoice" />
-            <a class="btn btn-primary" id="addinvoice">Add New invoice</a>
-{{--            <a href="javascript:void(0)" data-id="{{$scheduleJobId}}" class="btn btn-primary" id="updateinvoice">Update invoice</a>--}}
+            <ul class="nav nav-pills mb-4 bg-white" id="myTab" role="tablist">
+                <li class="nav-item ">
+                    <a class=" nav-link text-uppercase" href="{{ route('print.items.invoice', $scheduleJobId)}}">Print Invoice</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-uppercase active btn btn-primary" id="addinvoice">Add New invoic</a>
+                </li>
+            </ul>
+
             <div class="row">
                 <div class="col-xl-12 col-md-12">
                     <div class="card user-profile-list">
                         <div class="card-body-dd theme-tbl">
-                            <x-table action="false" checkbox="false" :keys="['Item Code', 'Quantity', '']" />
+                            <x-table action="false" checkbox="false" :keys="['Item Code', 'Description', 'Quantity', '']" />
                         </div>
                     </div>
                 </div>
@@ -52,6 +59,9 @@
                 var datatable_columns = [
                     {
                         data: 'code'
+                    },
+                    {
+                        data: 'used_items.description'
                     },
                     {
                         data: 'quantity'

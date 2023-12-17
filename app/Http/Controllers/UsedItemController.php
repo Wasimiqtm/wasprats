@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ItemsInvoice;
 use App\Models\ScheduleJob;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Requests\UsedItemRequest;
 use App\Models\UsedItem;
@@ -243,5 +244,13 @@ class UsedItemController extends Controller
     {
         $result = UsedItem::find($request->id);
         return $result;
+    }
+
+    public function printItemsInvoice($scheduleJobId)
+    {
+        $currentTime = Carbon::now();
+        $fileName =  $currentTime->toDateTimeString();
+        $printInvoice = ItemsInvoice::with('schedule_job.services', 'used_items')->where('schedule_job_id', $scheduleJobId)->get();
+        return view('used-items.partial.print_invoice', compact('printInvoice'));
     }
 }
