@@ -94,7 +94,7 @@
                         id: this.value,
                     },
                     success: function (data) {
-                        $("#item_description").val(data.description)
+                        $("#item_description textarea").val(data.description)
                     }
                 })
             });
@@ -114,7 +114,7 @@
                     success: function (data) {
                         console.log(data);
                         $("#item_qty").val(data.data.quantity)
-                        $("#item_description").val(data.data.used_items.description)
+                        $("#item_description textarea").val(data.data.used_items.description)
                         $("#item_id").val(data.data.used_items.id)
                         $("#edit_item_id").val(data.data.used_items.id)
                         $("#item_invoice_id").val(id)

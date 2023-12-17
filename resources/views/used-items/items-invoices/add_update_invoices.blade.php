@@ -37,9 +37,9 @@
         </tr>
         <tr>
             <td>
-                <div class="col-sm-12">
+                <div class="col-sm-12" id="item_description">
                     <h6>Used Item Description:</h6>
-                    {!! Form::textarea('term', null, ['class' => 'form-control', 'rows' => 4, 'id' => 'item_description', 'readonly' => 'readonly']) !!}
+                    {!! Form::textarea('term', null, ['class' => 'form-control', 'rows' => 4, 'readonly' => 'readonly']) !!}
                 </div>
             </td>
         </tr>
