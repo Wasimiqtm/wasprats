@@ -197,7 +197,7 @@ class PaymentsController extends Controller
          $usedItems = [];
          $usedThings = isset($servicePayment->used_things) ? json_decode($servicePayment->used_things) : null;
         if($usedThings) {
-           $usedItems =  UsedItem::whereIn('id', $usedThings)->get()->pluck('name');
+           $usedItems =  UsedItem::whereIn('id', $usedThings)->get()->pluck('code');
         }
         $tax =  Tax::where('is_active',1)->first();
         $applyTax = isset($tax) ? (int) $tax->rate : 0;
