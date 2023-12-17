@@ -4,6 +4,7 @@
         <div class="pcoded-content">
             <x-breadcrumb title="{{ $job->services->name }} Items Invoice" />
             <a class="btn btn-primary" id="addinvoice">Add New invoice</a>
+            <a href="javascript:void(0)" data-id="{{$scheduleJobId}}" class="btn btn-primary" id="updateinvoice">Update invoice</a>
             <div class="row">
                 <div class="col-xl-12 col-md-12">
                     <div class="card user-profile-list">
@@ -61,6 +62,43 @@
             $("body").on('click', "#addinvoice", function () {
                 $("#invoiceModal").modal('show')
             });
+
+            /*$("body").on('click', "#updateinvoice", function () {
+
+                $.ajax({
+                    url: '{route('update.item.invoice')}}',
+                    type: 'POST',
+                    "headers": {'X-CSRF-TOKEN': "{{csrf_token()}}"},
+                    data:$("#invoiceId").serialize(),
+                    success: function (data) {
+
+                        $("#invoiceModal").modal('hide')
+                        $("div.modal-backdrop").remove();
+                        $("body").css({'overflow': 'auto', 'padding-right': '0px'});
+                        window.location.reload();
+
+                    }
+                })
+
+                $("#invoiceModal").modal('show')
+            });*/
+
+            $("body").on('click', "#updateinvoice", function () {
+                var id = $(this).attr('data-id')
+                $.ajax({
+                    url: '{{route('edit.item.invoice')}}',
+                    type: 'POST',
+                    "headers": {'X-CSRF-TOKEN': "{{csrf_token()}}"},
+                    data: {
+                        schedule_job_id: id,
+                    },
+                    success: function (data) {
+                        console.log(data);
+
+                    }
+                })
+            })
+
 
             $("body").on("click", "#saveInvoice", function () {
 

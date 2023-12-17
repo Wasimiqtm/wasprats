@@ -208,4 +208,10 @@ class UsedItemController extends Controller
             'html' => view('used-items.partial.item-row', get_defined_vars())->render()
         ];
     }
+
+    public function getEditItemsInvoice()
+    {
+        $itemsInvoiceData = ItemsInvoice::with('schedule_job.services', 'used_items')->where('schedule_job_id', \request()->schedule_job_id)->get();
+        return ['data' => $itemsInvoiceData];
+    }
 }
