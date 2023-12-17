@@ -8,7 +8,7 @@
         <thead>
         <tr class="thead-default">
             <th width="50%">Item</th>
-            <th>Qty</th>
+            <th width="50%">Qty</th>
             <th><i class="btn btn-sm fa fa-plus loadRow text-success"></i></th>
         </tr>
         </thead>
@@ -36,10 +36,12 @@
             <td class="text-center"><i class="btn btn-sm fa fa-trash removeRow text-danger"></i></td>
         </tr>
         <tr>
-            <div class="col-sm-12">
-                <h6>Used Item Description:</h6>
-                {!! Form::textarea('term', null, ['class' => 'form-control', 'rows' => 2, 'id' => 'item_description', 'readonly' => 'readonly']) !!}
-            </div>
+            <td>
+                <div class="col-sm-12">
+                    <h6>Used Item Description:</h6>
+                    {!! Form::textarea('term', null, ['class' => 'form-control', 'rows' => 4, 'id' => 'item_description', 'readonly' => 'readonly']) !!}
+                </div>
+            </td>
         </tr>
 
         </tbody>

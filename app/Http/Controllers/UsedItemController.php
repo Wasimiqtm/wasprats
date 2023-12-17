@@ -142,7 +142,7 @@ class UsedItemController extends Controller
     public function itemsInvoice(Request $request, $scheduleJobId)
     {
         if ($request->ajax()) {
-            $itemsInvoice = ItemsInvoice::with('schedule_job.services', 'used_items')->where(['schedule_job_id' => $scheduleJobId]);
+            $itemsInvoice = ItemsInvoice::with('schedule_job.services', 'used_items')->where(['schedule_job_id' => $scheduleJobId])->latest();
             return Datatables::of($itemsInvoice)
                 ->addColumn('service_name', function ($itemInvoice) {
                     return $itemInvoice->schedule_job->services->name;
@@ -162,9 +162,6 @@ class UsedItemController extends Controller
                     return $action;
                 })
                 ->editColumn('id', 'ID: {{$id}}')
-                /*->editColumn('created_at', function (ServicePayment $servicePayment) {
-                    return \Carbon\Carbon::parse($servicePayment->created_at )->isoFormat('DD-MM-YYYY');
-                })*/
                 ->rawColumns(['action'])
                 ->make(true);
         }
@@ -250,7 +247,7 @@ class UsedItemController extends Controller
     {
         $currentTime = Carbon::now();
         $fileName =  $currentTime->toDateTimeString();
-        $printInvoice = ItemsInvoice::with('schedule_job.services', 'used_items')->where('schedule_job_id', $scheduleJobId)->get();
+        $printInvoice = ItemsInvoice::with('schedule_job.services', 'used_items')->where('schedule_job_id', $scheduleJobId)->latest()->get();
         return view('used-items.partial.print_invoice', compact('printInvoice'));
     }
 }
