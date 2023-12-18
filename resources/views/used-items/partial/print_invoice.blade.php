@@ -78,7 +78,8 @@
 </style>
 <body onload="window.print()">
 <div class="head-title">
-    <h1 class="text-center m-0 p-0">Invoice</h1>
+    <div><img width="100" height="100" src="{{ asset('/uploads/print_logo.jpeg') }}"></div>
+    <h1 class="text-center m-0 p-0">Items Used</h1>
 </div>
 
 <div class="table-section bill-tbl w-100 mt-10">

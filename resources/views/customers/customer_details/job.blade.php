@@ -12,7 +12,7 @@
                                 {{--'Invoice Frequency',--}}
                                 'Assigned To',
                                 'Amount',
-                                'Tax',
+                                'Tax (%)',
                                 'Total',
                                 'Action'
                             ]"/>
