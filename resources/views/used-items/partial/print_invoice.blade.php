@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Items Invoice</title>
+    <title>Items Used</title>
 </head>
 <style type="text/css">
     body{
