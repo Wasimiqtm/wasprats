@@ -13,7 +13,6 @@
                                 'Customer Name',
                                 'Status',
                                 'Items Invoice',
-                                'Date',
                                 ''
                             ]"/>
                     </div>
@@ -50,9 +49,6 @@
                 },
                 {
                     data: 'items_invoice'
-                },
-                {
-                    data: 'created_at'
                 },
                 {
                     data: 'action',

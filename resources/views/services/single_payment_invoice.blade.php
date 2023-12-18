@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Generate Invoice</title>
+    <title></title>
 </head>
 <style type="text/css">
     body{
@@ -26,17 +26,17 @@
         width: 100%;
     }
     .w-50{
-        width:50%;   
+        width:50%;
     }
     .w-85{
-        width:85%;   
+        width:85%;
     }
     .w-15{
-        width:15%;   
+        width:15%;
     }
     .logo img{
         width:200px;
-        height:60px;        
+        height:60px;
     }
     .gray-color{
         color:#5D5D5D;
@@ -94,9 +94,10 @@
         float: right
     }
 </style>
-<body onload="window.print()">       
+<body onload="window.print()">
 <div class="head-title">
     <h1 class="text-center m-0 p-0">Invoice</h1>
+    <div><img width="100" height="100" src="{{ asset('/uploads/print_logo.jpeg') }}"></div>
 </div>
 <div class="add-detail mt-10">
     <div class="w-50 float-left mt-10">
@@ -172,7 +173,7 @@
                         <p>{{$servicePayment->remainingAmount}}</p>
                     </div>
                     <div style="clear: both;"></div>
-                </div> 
+                </div>
             </td>
         </tr>
     </table>
@@ -186,7 +187,7 @@
         <tr>
             <th class="left-side"></th>
             <th class="left-side"></th>
-            
+
          </td>
         </tr>
     </table>

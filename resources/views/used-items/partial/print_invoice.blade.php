@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Items Used</title>
+    <title></title>
 </head>
 <style type="text/css">
     body{
